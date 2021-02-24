@@ -3,7 +3,7 @@ package store.tests;
 public class Test {
 
 	public static void main(String[] args) {
-		System.out.println("it compiles");
+		System.out.println("This program compiles");
 
 	}
 
