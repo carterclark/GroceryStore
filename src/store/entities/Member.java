@@ -7,7 +7,7 @@ public class Member {
 	private String phoneNumber;
 	private String dateJoined;
 	private double feePaid;
-	private int id;
+	private String id;
 
 	private static int idCounter = 1;
 
@@ -17,7 +17,7 @@ public class Member {
 		this.phoneNumber = phoneNumber;
 		this.dateJoined = dateJoined;
 		this.feePaid = feePaid;
-		this.id = idCounter++;
+		this.id = "M-" + idCounter++;
 	}
 
 	public String getName() {
@@ -60,7 +60,7 @@ public class Member {
 		this.feePaid = feePaid;
 	}
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
@@ -73,21 +73,21 @@ public class Member {
 		long temp;
 		temp = Double.doubleToLongBits(feePaid);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
-		result = prime * result + id;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((phoneNumber == null) ? 0 : phoneNumber.hashCode());
 		return result;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(Object object) {
+		if (this == object)
 			return true;
-		if (obj == null)
+		if (object == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (getClass() != object.getClass())
 			return false;
-		Member other = (Member) obj;
+		Member other = (Member) object;
 		if (address == null) {
 			if (other.address != null)
 				return false;
@@ -100,7 +100,10 @@ public class Member {
 			return false;
 		if (Double.doubleToLongBits(feePaid) != Double.doubleToLongBits(other.feePaid))
 			return false;
-		if (id != other.id)
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
 			return false;
 		if (name == null) {
 			if (other.name != null)

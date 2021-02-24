@@ -6,7 +6,7 @@ public class Product {
 	private double currentPrice;
 	private int stockOnHand;
 	private int reOrderLevel;
-	private int id;
+	private String id;
 
 	private static int idCounter = 1;
 
@@ -15,7 +15,7 @@ public class Product {
 		this.currentPrice = currentPrice;
 		this.stockOnHand = stockOnHand;
 		this.reOrderLevel = reOrderLevel;
-		this.id = idCounter++;
+		this.id = "P-" + idCounter++;
 	}
 
 	public String getName() {
@@ -50,7 +50,7 @@ public class Product {
 		this.reOrderLevel = reOrderLevel;
 	}
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
@@ -61,7 +61,7 @@ public class Product {
 		long temp;
 		temp = Double.doubleToLongBits(currentPrice);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
-		result = prime * result + id;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + reOrderLevel;
 		result = prime * result + stockOnHand;
@@ -69,17 +69,20 @@ public class Product {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(Object object) {
+		if (this == object)
 			return true;
-		if (obj == null)
+		if (object == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (getClass() != object.getClass())
 			return false;
-		Product other = (Product) obj;
+		Product other = (Product) object;
 		if (Double.doubleToLongBits(currentPrice) != Double.doubleToLongBits(other.currentPrice))
 			return false;
-		if (id != other.id)
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
 			return false;
 		if (name == null) {
 			if (other.name != null)
