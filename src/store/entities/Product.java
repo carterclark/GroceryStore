@@ -5,16 +5,16 @@ public class Product {
 	private String name;
 	private double currentPrice;
 	private int stockOnHand;
-	private int reorderLevel;
+	private int reOrderLevel;
 	private String id;
 
 	private static int idCounter = 1;
 
-	public Product(String name, double currentPrice, int stockOnHand, int reorderLevel) {
+	public Product(String name, double currentPrice, int stockOnHand, int reOrderLevel) {
 		this.name = name;
 		this.currentPrice = currentPrice;
 		this.stockOnHand = stockOnHand;
-		this.reorderLevel = reorderLevel;
+		this.reOrderLevel = reOrderLevel;
 		this.id = "P-" + idCounter++;
 	}
 
@@ -43,11 +43,11 @@ public class Product {
 	}
 
 	public int getReOrderLevel() {
-		return reorderLevel;
+		return reOrderLevel;
 	}
 
-	public void setReOrderLevel(int reorderLevel) {
-		this.reorderLevel = reorderLevel;
+	public void setReOrderLevel(int reOrderLevel) {
+		this.reOrderLevel = reOrderLevel;
 	}
 
 	public String getId() {
@@ -63,7 +63,7 @@ public class Product {
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + reorderLevel;
+		result = prime * result + reOrderLevel;
 		result = prime * result + stockOnHand;
 		return result;
 	}
@@ -89,7 +89,7 @@ public class Product {
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (reorderLevel != other.reorderLevel)
+		if (reOrderLevel != other.reOrderLevel)
 			return false;
 		if (stockOnHand != other.stockOnHand)
 			return false;
