@@ -7,6 +7,7 @@ public class Product {
 	private int stockOnHand;
 	private int reOrderLevel;
 	private String id;
+	private boolean isOrdered;
 
 	private static int idCounter = 1;
 
@@ -15,6 +16,7 @@ public class Product {
 		this.currentPrice = currentPrice;
 		this.stockOnHand = stockOnHand;
 		this.reOrderLevel = reOrderLevel;
+		this.isOrdered = false;
 		this.id = "P-" + idCounter++;
 	}
 
@@ -38,8 +40,9 @@ public class Product {
 		return stockOnHand;
 	}
 
-	public void setStockOnHand(int stockOnHand) {
+	public boolean setStockOnHand(int stockOnHand) {
 		this.stockOnHand = stockOnHand;
+		return (this.stockOnHand <= reOrderLevel);
 	}
 
 	public int getReOrderLevel() {
@@ -52,6 +55,14 @@ public class Product {
 
 	public String getId() {
 		return id;
+	}
+
+	public boolean isOrdered() {
+		return isOrdered;
+	}
+
+	public void setOrdered(boolean isOrdered) {
+		this.isOrdered = isOrdered;
 	}
 
 	@Override
