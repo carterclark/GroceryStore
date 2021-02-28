@@ -154,24 +154,7 @@ public class UserInterface implements Serializable {
 		return (answer == 'Y');
 	}
 
-	public static void main(String[] args) {
-		int number = 0;
-		number = getInt("Enter a number:", "Not a valid input!");
-		System.out.println("NUMBER YOU ENTERED =  " + number + "\n\n");
-		String word = "";
-		word = getString("Enter any words:", "Nothing is not allowed!");
-		System.out.println("WORDS YOU ENTERED = " + word + "\n\n");
-
-		double num = 0.0;
-		num = getDouble("Enter any real number:", "O-oh! Something's wrong...");
-		System.out.println("NUMBER YOU ENTERED =  " + num + "\n\n");
-		Calendar date = null;
-		date = getDate("Enter a date:", "Invalid input.");
-		System.out.println("DATE YOU ENTERED =  " + (date.get(Calendar.MONTH) + 1) + "/" + date.get(Calendar.DATE) + "/"
-				+ date.get(Calendar.YEAR) + "\n\n");
-		boolean resp = false;
-		resp = getYesOrNo("Do you like...?", "You should answer Y/N.");
-		System.out.println("YOU ANSWERED : '" + resp + "'\n\n");
-	}
+	// public static void main(String[] args) {
+	// }
 
 }
