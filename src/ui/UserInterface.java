@@ -154,6 +154,12 @@ public class UserInterface implements Serializable {
 		return (answer == 'Y');
 	}
 
+	public static Calendar getToday() {
+		Calendar date = new GregorianCalendar();
+		date.setTimeInMillis(System.currentTimeMillis());
+		return date;
+	}
+
 	// public static void main(String[] args) {
 	// }
 
