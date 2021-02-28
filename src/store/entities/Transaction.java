@@ -1,12 +1,14 @@
 package store.entities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 
-public class Transaction {
+public class Transaction implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private Calendar date;
 	private ArrayList<Item> itemsList;
 	private double totalPrice;
