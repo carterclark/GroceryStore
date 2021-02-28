@@ -1,22 +1,24 @@
 package store.entities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 
-public class Member {
+public class Member implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private String name;
 	private String address;
 	private String phoneNumber;
-	private String dateJoined;
+	private Calendar dateJoined;
 	private double feePaid;
 	private String id;
 	private ArrayList<Transaction> transactions;
 
 	private static int idCounter = 1;
 
-	Member(String name, String address, String phoneNumber, String dateJoined, double feePaid) {
+	public Member(String name, String address, String phoneNumber, Calendar dateJoined, double feePaid) {
 		this.name = name;
 		this.address = address;
 		this.phoneNumber = phoneNumber;
@@ -50,11 +52,11 @@ public class Member {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public String getDateJoined() {
+	public Calendar getDateJoined() {
 		return dateJoined;
 	}
 
-	public void setDateJoined(String dateJoined) {
+	public void setDateJoined(Calendar dateJoined) {
 		this.dateJoined = dateJoined;
 	}
 

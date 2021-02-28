@@ -1,10 +1,12 @@
 package store.entities;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class Order {
+public class Order implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private String orderNumber;
 	private String productName;
 	private String productId;
@@ -62,6 +64,12 @@ public class Order {
 
 	public int getQuantity() {
 		return quantity;
+	}
+
+	@Override
+	public String toString() {
+		return "Order [orderNumber=" + orderNumber + ", productName=" + productName + ", dateOfOrder=" + dateOfOrder
+				+ ", quantity=" + quantity + "]";
 	}
 
 }

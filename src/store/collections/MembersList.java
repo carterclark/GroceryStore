@@ -1,26 +1,31 @@
 package store.collections;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import store.entities.Member;
 
-public class MembersList {
+public class MembersList implements Serializable {
 
-	private static ArrayList<Member> membersList;
+	private static final long serialVersionUID = 1L;
+	private static MembersList singleton;
+	private ArrayList<Member> membersList;
 
 	private MembersList() {
+		membersList = new ArrayList<Member>();
 	}
 
-	public static ArrayList<Member> instance() {
-		if (membersList == null) {
-			membersList = new ArrayList<Member>();
+	public static MembersList instance() {
+		if (singleton == null) {
+			singleton = new MembersList();
 		}
-		return membersList;
+		return singleton;
 	}
 
-	public void addMember(Member member) {
+	public String addMember(Member member) {
 		membersList.add(member);
+		return membersList.get(membersList.size() - 1).getId();
 	}
 
 	public Member search(String memberId) {

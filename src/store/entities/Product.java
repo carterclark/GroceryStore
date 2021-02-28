@@ -1,7 +1,10 @@
 package store.entities;
 
-public class Product {
+import java.io.Serializable;
 
+public class Product implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	private String name;
 	private double currentPrice;
 	private int stockOnHand;
@@ -9,15 +12,13 @@ public class Product {
 	private String id;
 	private boolean isOrdered;
 
-	private static int idCounter = 1;
-
-	public Product(String name, double currentPrice, int stockOnHand, int reOrderLevel) {
+	public Product(String name, String id, double currentPrice, int stockOnHand, int reOrderLevel) {
 		this.name = name;
 		this.currentPrice = currentPrice;
 		this.stockOnHand = stockOnHand;
 		this.reOrderLevel = reOrderLevel;
 		this.isOrdered = false;
-		this.id = "P-" + idCounter++;
+		this.id = id;
 	}
 
 	public String getName() {

@@ -1,22 +1,26 @@
 package store.collections;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import store.entities.Order;
 
-public class OrdersList {
+public class OrdersList implements Serializable {
 
-	private static ArrayList<Order> ordersList;
+	private static final long serialVersionUID = 1L;
+	private static OrdersList singleton;
+	private ArrayList<Order> ordersList;
 
 	private OrdersList() {
+		ordersList = new ArrayList<Order>();
 	}
 
-	public static ArrayList<Order> instance() {
-		if (ordersList == null) {
-			ordersList = new ArrayList<Order>();
+	public static OrdersList instance() {
+		if (singleton == null) {
+			singleton = new OrdersList();
 		}
-		return ordersList;
+		return singleton;
 	}
 
 	public void addOrder(Order order) {
