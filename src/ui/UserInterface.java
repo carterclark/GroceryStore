@@ -56,7 +56,7 @@ public class UserInterface implements Serializable {
 			} else {
 				try {
 					value = Integer.parseInt(read);
-				} catch (NumberFormatException ex) {
+				} catch (Exception exception) {
 					error = true;
 				}
 			}
@@ -81,7 +81,7 @@ public class UserInterface implements Serializable {
 			} else {
 				try {
 					value = Double.parseDouble(read);
-				} catch (NumberFormatException ex) {
+				} catch (Exception exception) {
 					error = true;
 				}
 			}
@@ -111,7 +111,7 @@ public class UserInterface implements Serializable {
 					month = Integer.parseInt(read.substring(0, 2));
 					day = Integer.parseInt(read.substring(2, 4));
 					year = Integer.parseInt(read.substring(4, 8));
-				} catch (NumberFormatException ex) {
+				} catch (Exception exception) {
 					error = true;
 				}
 			}
