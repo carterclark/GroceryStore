@@ -8,7 +8,6 @@ public class Product implements Serializable {
 	private String name;
 	private double currentPrice;
 	private int stockOnHand;
-	private int reOrderLevel;
 	private String id;
 	private boolean isOrdered;
 
