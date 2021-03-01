@@ -41,8 +41,14 @@ public class Item implements Serializable {
 
 	@Override
 	public String toString() {
-		return name + "  " + quantity + "x  ($" + String.format("%.2f", unitPrice) + "/unit)  $"
-				+ String.format("%.2f", itemPrice);
+		String fittedName;
+		if (name.length() > 18) {
+			fittedName = name.substring(0, 18);
+		} else {
+			fittedName = name;
+		}
+		return String.format("%-18s", fittedName) + "  " + String.format("%3s", quantity) + "x  ("
+				+ String.format("$%6.2f", unitPrice) + "/unit):  " + String.format("$%8.2f", itemPrice);
 	}
 
 }

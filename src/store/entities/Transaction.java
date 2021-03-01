@@ -55,11 +55,11 @@ public class Transaction implements Serializable {
 			result += "0";
 		}
 		result += date.get(Calendar.MINUTE) + "\n";
-		result += "---------------------------------------\n";
+		result += "----------------------------------------------------\n";
 		for (Iterator<Item> iterator = itemsList.iterator(); iterator.hasNext();) {
 			result += iterator.next().toString() + "\n";
 		}
-		result += "TOTAL -------------------------- $" + String.format("%.2f", totalPrice) + "\n";
+		result += "TOTAL ------------------------------------ $" + String.format("%8.2f", totalPrice) + "\n";
 		return result;
 	}
 
