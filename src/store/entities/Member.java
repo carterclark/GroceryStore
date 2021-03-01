@@ -1,23 +1,35 @@
 package store.entities;
 
-public class Member {
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Iterator;
 
+public class Member implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	private String name;
 	private String address;
 	private String phoneNumber;
-	private String dateJoined;
+	private Calendar dateJoined;
 	private double feePaid;
 	private String id;
+	private ArrayList<Transaction> transactions;
 
 	private static int idCounter = 1;
 
+<<<<<<< HEAD
+	public Member(String name, String address, String phoneNumber, Calendar dateJoined, double feePaid) {
+=======
 	public Member(String name, String address, String phoneNumber, String dateJoined, double feePaid) {
+>>>>>>> upstream/main
 		this.name = name;
 		this.address = address;
 		this.phoneNumber = phoneNumber;
 		this.dateJoined = dateJoined;
 		this.feePaid = feePaid;
 		this.id = "M-" + idCounter++;
+		transactions = new ArrayList<Transaction>();
 	}
 
 	public String getName() {
@@ -44,11 +56,11 @@ public class Member {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public String getDateJoined() {
+	public Calendar getDateJoined() {
 		return dateJoined;
 	}
 
-	public void setDateJoined(String dateJoined) {
+	public void setDateJoined(Calendar dateJoined) {
 		this.dateJoined = dateJoined;
 	}
 
@@ -62,6 +74,21 @@ public class Member {
 
 	public String getId() {
 		return id;
+	}
+
+	public void addTransaction(Transaction transaction) {
+		transactions.add(transaction);
+	}
+
+	public Iterator<Transaction> getTransactions(Calendar fromDate, Calendar toDate) {
+		ArrayList<Transaction> result = new ArrayList<Transaction>();
+		for (Iterator<Transaction> iterator = transactions.iterator(); iterator.hasNext();) {
+			Transaction transaction = iterator.next();
+			if (transaction.isBetweenDates(fromDate, toDate)) {
+				result.add(transaction);
+			}
+		}
+		return result.iterator();
 	}
 
 	@Override
