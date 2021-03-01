@@ -12,7 +12,6 @@ public class MembersList implements Serializable {
 	private static MembersList singleton;
 	private ArrayList<Member> membersList;
 
-<<<<<<< HEAD
 	private MembersList() {
 		membersList = new ArrayList<Member>();
 	}
@@ -37,7 +36,11 @@ public class MembersList implements Serializable {
 			}
 		}
 		return null;
-=======
+	}
+
+	// WE WILL RESOLVE THE DIFFERENCES BETWEEN addMember() METHODS ABOVE AND BELOW
+	// LATER.
+
 	/**
 	 * This method takes member parameters, creates a new member object, and adds
 	 * that member object to the Member array
@@ -68,7 +71,6 @@ public class MembersList implements Serializable {
 			}
 		}
 		return false;
->>>>>>> upstream/main
 	}
 
 }

@@ -18,11 +18,7 @@ public class Member implements Serializable {
 
 	private static int idCounter = 1;
 
-<<<<<<< HEAD
 	public Member(String name, String address, String phoneNumber, Calendar dateJoined, double feePaid) {
-=======
-	public Member(String name, String address, String phoneNumber, String dateJoined, double feePaid) {
->>>>>>> upstream/main
 		this.name = name;
 		this.address = address;
 		this.phoneNumber = phoneNumber;

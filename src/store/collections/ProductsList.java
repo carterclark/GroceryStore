@@ -1,6 +1,5 @@
 package store.collections;
 
-<<<<<<< HEAD
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -37,14 +36,12 @@ public class ProductsList implements Serializable {
 		}
 		return null;
 	}
-=======
-import java.util.ArrayList;
 
-import store.entities.Product;
+	// WE WILL RESOLVE THE DIFFERENCES BETWEEN ProductsList CLASSES ABOVE AND BELOW
+	// LATER.
 
 public class ProductsList {
->>>>>>> upstream/main
-
+	
 	private ArrayList<Product> productsList = new ArrayList<Product>();
 
 	/**
