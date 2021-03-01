@@ -12,6 +12,7 @@ public class Product implements Serializable {
 	private String id;
 	private boolean isOrdered;
 
+<<<<<<< HEAD
 	public Product(String name, String id, double currentPrice, int stockOnHand, int reOrderLevel) {
 		this.name = name;
 		this.currentPrice = currentPrice;
@@ -19,6 +20,16 @@ public class Product implements Serializable {
 		this.reOrderLevel = reOrderLevel;
 		this.isOrdered = false;
 		this.id = id;
+=======
+	private static int idCounter = 1;
+
+	public Product(String name, double currentPrice, int stockOnHand, int reorderLevel) {
+		this.name = name;
+		this.currentPrice = currentPrice;
+		this.stockOnHand = stockOnHand;
+		this.reorderLevel = reorderLevel;
+		this.id = "P-" + idCounter++;
+>>>>>>> upstream/main
 	}
 
 	public String getName() {
@@ -47,11 +58,11 @@ public class Product implements Serializable {
 	}
 
 	public int getReOrderLevel() {
-		return reOrderLevel;
+		return reorderLevel;
 	}
 
-	public void setReOrderLevel(int reOrderLevel) {
-		this.reOrderLevel = reOrderLevel;
+	public void setReOrderLevel(int reorderLevel) {
+		this.reorderLevel = reorderLevel;
 	}
 
 	public String getId() {
@@ -75,7 +86,7 @@ public class Product implements Serializable {
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + reOrderLevel;
+		result = prime * result + reorderLevel;
 		result = prime * result + stockOnHand;
 		return result;
 	}
@@ -101,7 +112,7 @@ public class Product implements Serializable {
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (reOrderLevel != other.reOrderLevel)
+		if (reorderLevel != other.reorderLevel)
 			return false;
 		if (stockOnHand != other.stockOnHand)
 			return false;
