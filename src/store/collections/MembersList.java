@@ -51,11 +51,15 @@ public class MembersList implements Serializable {
 	 * @param dateJoined  the date the member joined
 	 * @param feePaid     amount paid by the member to the grocery store
 	 */
-	public void addMemember(String name, String address, String phoneNumber, String dateJoined, double feePaid) {
 
-		membersList.add(new Member(name, address, phoneNumber, dateJoined, feePaid));
-
-	}
+	/*
+	 * public void addMemember(String name, String address, String phoneNumber,
+	 * String dateJoined, double feePaid) {
+	 * 
+	 * membersList.add(new Member(name, address, phoneNumber, dateJoined, feePaid));
+	 * 
+	 * }
+	 */
 
 	/**
 	 * This method removes a single member from the members list array

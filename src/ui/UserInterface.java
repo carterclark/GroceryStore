@@ -33,6 +33,9 @@ public class UserInterface implements Serializable {
 			"RETRIEVE MEMBER INFO", "PRINT MEMBER'S TRANSACTIONS", "LIST ALL OUTSTANDING ORDERS", "LIST ALL MEMBERS",
 			"LIST ALL PRODUCTS", "SAVE ALL DATA TO DISK", "HELP (DISPLAYS THIS MENU)" };
 
+	private static Scanner input = new Scanner(System.in);
+	private static String yesNoErrorMessage = "Please answer Y[es] or N[o].";
+
 	private UserInterface() {
 		groceryStore = GroceryStore.instance();
 	}
@@ -45,7 +48,7 @@ public class UserInterface implements Serializable {
 	}
 
 	public static String getString(String prompt, String errorMessage) {
-		Scanner input = new Scanner(System.in);
+		// Scanner input = new Scanner(System.in);
 		String read = "";
 		boolean error = true;
 		while (error) {
@@ -63,7 +66,7 @@ public class UserInterface implements Serializable {
 	}
 
 	public static int getInt(String prompt, String errorMessage) {
-		Scanner input = new Scanner(System.in);
+		// Scanner input = new Scanner(System.in);
 		String read = "";
 		int value = 0;
 		boolean error = true;
@@ -88,7 +91,7 @@ public class UserInterface implements Serializable {
 	}
 
 	public static double getDouble(String prompt, String errorMessage) {
-		Scanner input = new Scanner(System.in);
+		// Scanner input = new Scanner(System.in);
 		String read = "";
 		double value = 0;
 		boolean error = true;
@@ -113,7 +116,7 @@ public class UserInterface implements Serializable {
 	}
 
 	public static Calendar getDate(String prompt, String errorMessage) {
-		Scanner input = new Scanner(System.in);
+		// Scanner input = new Scanner(System.in);
 		String read = "";
 		boolean error = true;
 		Calendar date = new GregorianCalendar();
@@ -147,7 +150,7 @@ public class UserInterface implements Serializable {
 	}
 
 	public static boolean getYesOrNo(String prompt, String errorMessage) {
-		Scanner input = new Scanner(System.in);
+		// Scanner input = new Scanner(System.in);
 		String read = "";
 		char answer = ' ';
 		boolean error = true;
@@ -288,15 +291,15 @@ public class UserInterface implements Serializable {
 	}
 
 	public static void main(String[] args) {
-		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
-		System.out.println("★★★ WELCOME TO GROCERY STORE ★★★");
-		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
-		if (getYesOrNo("Would you like to load Store data from the disk?", "Please answer Y[es] or N[o].")) {
+		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
+		System.out.println("★★★ WELCOME TO OUR GROCERY STORE ★★★");
+		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
+		if (getYesOrNo("Would you like to load Store data from the disk?", yesNoErrorMessage)) {
 			load();
 		} else {
 			System.out.println();
 			if (getYesOrNo("Do you wish to generate a test bed and\ninvoke the functionality using asserts?",
-					"Please answer Y[es] or N[o].")) {
+					yesNoErrorMessage)) {
 				testBed();
 			} else {
 				System.out.println("\nStarting a new, empty Grocery Store...");
@@ -304,10 +307,11 @@ public class UserInterface implements Serializable {
 		}
 		loop();
 		System.out.println();
-		if (getYesOrNo("Would you like to save current Store data to disk?", "Please answer Y[es] or N[o].")) {
+		if (getYesOrNo("Would you like to save current Store data to disk?", yesNoErrorMessage)) {
 			save();
 		}
 		System.out.println("\nThank you for using our Grocery Store!\nPlease come again soon!\n\nGOOD-BYE.\n");
+		input.close();
 	}
 
 }
