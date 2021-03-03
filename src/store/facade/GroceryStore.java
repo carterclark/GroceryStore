@@ -1,7 +1,6 @@
 package store.facade;
 
 import java.io.Serializable;
-import java.util.Calendar;
 
 import store.collections.MembersList;
 import store.collections.OrdersList;
@@ -29,10 +28,17 @@ public class GroceryStore implements Serializable {
 		return singleton;
 	}
 
-	public static String addMember(String name, String address, String phoneNumber, Calendar dateJoined,
-			double feePaid) {
+	public static Result addMember(Request request) {
+		Result result = new Result();
 		String memberId = "";
-		memberId = membersList.addMemberUtil(new Member(name, address, phoneNumber, dateJoined, feePaid));
-		return memberId;
+		memberId = membersList.addMember(new Member(request.getMemberName(), request.getMemberAddress(),
+				request.getMemberPhoneNumber(), request.getMemberDateJoined(), request.getMemberFeePaid()));
+		result.setMemberId(memberId);
+		if (memberId != "") {
+			result.setResultCode(result.ACTION_SUCCESSFUL);
+		} else {
+			result.setResultCode(result.ACTION_FAILED);
+		}
+		return result;
 	}
 }

@@ -12,14 +12,13 @@ public class Product implements Serializable {
 	private String id;
 	private boolean isOrdered;
 
-	public Product(String name, String id, double currentPrice, int stockOnHand, int reOrderLevel) {
+	public Product(String name, String id, double currentPrice, int stockOnHand, int reorderLevel) {
 		this.name = name;
 		this.currentPrice = currentPrice;
 		this.stockOnHand = stockOnHand;
-		this.reorderLevel = reOrderLevel;
+		this.reorderLevel = reorderLevel;
 		this.isOrdered = false;
 		this.id = id;
-
 	}
 
 	public String getName() {
@@ -47,11 +46,11 @@ public class Product implements Serializable {
 		return (this.stockOnHand <= reorderLevel);
 	}
 
-	public int getReOrderLevel() {
+	public int getReorderLevel() {
 		return reorderLevel;
 	}
 
-	public void setReOrderLevel(int reorderLevel) {
+	public void setReorderLevel(int reorderLevel) {
 		this.reorderLevel = reorderLevel;
 	}
 

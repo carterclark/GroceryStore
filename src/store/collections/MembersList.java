@@ -24,6 +24,24 @@ public class MembersList implements Serializable {
 		return singleton;
 	}
 
+	public String addMember(Member member) {
+		membersList.add(member);
+		return membersList.get(membersList.size() - 1).getId();
+	}
+
+	public Member search(String memberId) {
+		for (Iterator<Member> iterator = membersList.iterator(); iterator.hasNext();) {
+			Member next = iterator.next();
+			if (next.getId().equals(memberId)) {
+				return next;
+			}
+		}
+		return null;
+	}
+
+	// WE WILL RESOLVE THE DIFFERENCES BETWEEN addMember() METHODS ABOVE AND BELOW
+	// LATER.
+
 	/**
 	 * This method takes member parameters, creates a new member object, and adds
 	 * that member object to the Member array
@@ -40,19 +58,18 @@ public class MembersList implements Serializable {
 
 	}
 
+	/*
+	 * public void addMemember(String name, String address, String phoneNumber,
+	 * String dateJoined, double feePaid) {
+	 * 
+	 * membersList.add(new Member(name, address, phoneNumber, dateJoined, feePaid));
+	 * 
+	 * }
+	 */
+
 	public String addMemberUtil(Member member) {
 		membersList.add(member);
 		return membersList.get(membersList.size() - 1).getId();
-	}
-
-	public Member search(String memberId) {
-		for (Iterator<Member> iterator = membersList.iterator(); iterator.hasNext();) {
-			Member next = iterator.next();
-			if (next.getId().equals(memberId)) {
-				return next;
-			}
-		}
-		return null;
 	}
 
 	/**
