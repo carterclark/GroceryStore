@@ -2,6 +2,7 @@ package store.collections;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 
 import store.entities.Member;
@@ -12,7 +13,6 @@ public class MembersList implements Serializable {
 	private static MembersList singleton;
 	private ArrayList<Member> membersList;
 
-<<<<<<< HEAD
 	private MembersList() {
 		membersList = new ArrayList<Member>();
 	}
@@ -24,7 +24,23 @@ public class MembersList implements Serializable {
 		return singleton;
 	}
 
-	public String addMember(Member member) {
+	/**
+	 * This method takes member parameters, creates a new member object, and adds
+	 * that member object to the Member array
+	 * 
+	 * @param name        the name of the member
+	 * @param address     the address of the member
+	 * @param phoneNumber the phone number of the member
+	 * @param dateJoined  the date the member joined
+	 * @param feePaid     amount paid by the member to the grocery store
+	 */
+	public void addMemember(String name, String address, String phoneNumber, Calendar dateJoined, double feePaid) {
+
+		membersList.add(new Member(name, address, phoneNumber, dateJoined, feePaid));
+
+	}
+
+	public String addMemberUtil(Member member) {
 		membersList.add(member);
 		return membersList.get(membersList.size() - 1).getId();
 	}
@@ -37,21 +53,6 @@ public class MembersList implements Serializable {
 			}
 		}
 		return null;
-=======
-	/**
-	 * This method takes member parameters, creates a new member object, and adds
-	 * that member object to the Member array
-	 * 
-	 * @param name        the name of the member
-	 * @param address     the address of the member
-	 * @param phoneNumber the phone number of the member
-	 * @param dateJoined  the date the member joined
-	 * @param feePaid     amount paid by the member to the grocery store
-	 */
-	public void addMemember(String name, String address, String phoneNumber, String dateJoined, double feePaid) {
-
-		membersList.add(new Member(name, address, phoneNumber, dateJoined, feePaid));
-
 	}
 
 	/**
@@ -68,7 +69,6 @@ public class MembersList implements Serializable {
 			}
 		}
 		return false;
->>>>>>> upstream/main
 	}
 
 }

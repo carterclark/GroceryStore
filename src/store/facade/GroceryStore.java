@@ -32,7 +32,7 @@ public class GroceryStore implements Serializable {
 	public static String addMember(String name, String address, String phoneNumber, Calendar dateJoined,
 			double feePaid) {
 		String memberId = "";
-		memberId = membersList.addMember(new Member(name, address, phoneNumber, dateJoined, feePaid));
+		memberId = membersList.addMemberUtil(new Member(name, address, phoneNumber, dateJoined, feePaid));
 		return memberId;
 	}
 }

@@ -1,6 +1,5 @@
 package store.collections;
 
-<<<<<<< HEAD
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -11,10 +10,10 @@ public class ProductsList implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private static ProductsList singleton;
-	private ArrayList<Product> productsList;
+	private ArrayList<Product> productsList1;
 
 	private ProductsList() {
-		productsList = new ArrayList<Product>();
+		productsList1 = new ArrayList<Product>();
 	}
 
 	public static ProductsList instance() {
@@ -25,11 +24,11 @@ public class ProductsList implements Serializable {
 	}
 
 	public void addProduct(Product product) {
-		productsList.add(product);
+		productsList1.add(product);
 	}
 
 	public Product search(String productId) {
-		for (Iterator<Product> iterator = productsList.iterator(); iterator.hasNext();) {
+		for (Iterator<Product> iterator = productsList1.iterator(); iterator.hasNext();) {
 			Product next = iterator.next();
 			if (next.getId().equals(productId)) {
 				return next;
@@ -37,13 +36,6 @@ public class ProductsList implements Serializable {
 		}
 		return null;
 	}
-=======
-import java.util.ArrayList;
-
-import store.entities.Product;
-
-public class ProductsList {
->>>>>>> upstream/main
 
 	private ArrayList<Product> productsList = new ArrayList<Product>();
 
@@ -59,11 +51,11 @@ public class ProductsList {
 	 *                     reorder of that product
 	 * @return true if the product was added, false if it was not added
 	 */
-	public boolean addProduct(String name, double currentPrice, int stockOnHand, int reorderLevel) {
+	public boolean addProduct(String name, String id, double currentPrice, int stockOnHand, int reorderLevel) {
 
-		for (Product product : productsList) {
+		for (Product product : productsList1) {
 			if (product.getName().equalsIgnoreCase(name)) {
-				productsList.add(new Product(name, currentPrice, stockOnHand, reorderLevel));
+				productsList1.add(new Product(name, id, currentPrice, stockOnHand, reorderLevel));
 				return true;
 			}
 		}
