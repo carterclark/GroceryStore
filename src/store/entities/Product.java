@@ -46,11 +46,11 @@ public class Product implements Serializable {
 		return (this.stockOnHand <= reorderLevel);
 	}
 
-	public int getReOrderLevel() {
+	public int getReorderLevel() {
 		return reorderLevel;
 	}
 
-	public void setReOrderLevel(int reorderLevel) {
+	public void setReorderLevel(int reorderLevel) {
 		this.reorderLevel = reorderLevel;
 	}
 
