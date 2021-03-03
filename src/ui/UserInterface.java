@@ -90,6 +90,30 @@ public class UserInterface implements Serializable {
 		return value;
 	}
 
+	public static long getLong(String prompt, String errorMessage) {
+		String read = "";
+		long value = 0;
+		boolean error = true;
+		while (error) {
+			error = false;
+			System.out.print(prompt + " ");
+			read = input.nextLine().trim();
+			if (read.equals("")) {
+				error = true;
+			} else {
+				try {
+					value = Long.parseLong(read);
+				} catch (Exception exception) {
+					error = true;
+				}
+			}
+			if (error) {
+				System.out.println(errorMessage);
+			}
+		}
+		return value;
+	}
+
 	public static double getDouble(String prompt, String errorMessage) {
 		String read = "";
 		double value = 0;
@@ -198,7 +222,7 @@ public class UserInterface implements Serializable {
 		String name = getString("Enter new member's name:", "Invalid input.");
 		String address = getString("Enter member's address:", "Invalid input.");
 		String phoneNumber = String.valueOf(
-				getInt("Enter member's phone number (in format 1234567890):", "You didn't enter a phone number."));
+				getLong("Enter member's phone number (in format 1234567890):", "You didn't enter a phone number."));
 		double feePaid = getDouble("Enter member fee paid:", "You didn't enter a number.");
 		Request.instance().setMemberName(name);
 		Request.instance().setMemberAddress(address);
@@ -207,9 +231,9 @@ public class UserInterface implements Serializable {
 		Request.instance().setMemberDateJoined(getToday());
 		Result result = GroceryStore.addMember(Request.instance());
 		if (result.getResultCode() == result.ACTION_SUCCESSFUL) {
-			System.out.println("Member added. Member ID = " + result.getMemberId() + ".");
+			System.out.println("\nMember added. Member ID = " + result.getMemberId() + ".");
 		} else {
-			System.out.println("Member couldn't be added.");
+			System.out.println("\nMember couldn't be added.");
 		}
 	}
 
