@@ -2,6 +2,7 @@ package store.collections;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 
 import store.entities.Member;
@@ -51,6 +52,11 @@ public class MembersList implements Serializable {
 	 * @param dateJoined  the date the member joined
 	 * @param feePaid     amount paid by the member to the grocery store
 	 */
+	public void addMemember(String name, String address, String phoneNumber, Calendar dateJoined, double feePaid) {
+
+		membersList.add(new Member(name, address, phoneNumber, dateJoined, feePaid));
+
+	}
 
 	/*
 	 * public void addMemember(String name, String address, String phoneNumber,
@@ -60,6 +66,11 @@ public class MembersList implements Serializable {
 	 * 
 	 * }
 	 */
+
+	public String addMemberUtil(Member member) {
+		membersList.add(member);
+		return membersList.get(membersList.size() - 1).getId();
+	}
 
 	/**
 	 * This method removes a single member from the members list array
