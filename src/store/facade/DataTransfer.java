@@ -5,6 +5,14 @@ import java.util.Calendar;
 import store.entities.Member;
 import store.entities.Product;
 
+/**
+ * Class DataTransfer is used as an engine for safe data transfer between the
+ * front and back end of the business, created to suit the exact needs of this
+ * grocery store.
+ * 
+ * @author
+ *
+ */
 public class DataTransfer {
 
 	private String memberName;
@@ -18,6 +26,7 @@ public class DataTransfer {
 	private int productStockOnHand;
 	private double productCurrentPrice;
 	private int productReorderLevel;
+	private int orderQuantity;
 	private String orderId;
 	private String list;
 
@@ -25,6 +34,9 @@ public class DataTransfer {
 		reset();
 	}
 
+	/**
+	 * Resets all fields to "", null, or zero.
+	 */
 	public void reset() {
 		memberName = "";
 		memberId = "";
@@ -37,6 +49,7 @@ public class DataTransfer {
 		productStockOnHand = 0;
 		productCurrentPrice = 0.0;
 		productReorderLevel = 0;
+		orderQuantity = 0;
 		orderId = "";
 		list = "";
 	}
@@ -129,6 +142,14 @@ public class DataTransfer {
 		this.productReorderLevel = productReorderLevel;
 	}
 
+	public int getOrderQuantity() {
+		return orderQuantity;
+	}
+
+	public void setOrderQuantity(int orderQuantity) {
+		this.orderQuantity = orderQuantity;
+	}
+
 	public String getOrderId() {
 		return orderId;
 	}
@@ -145,7 +166,14 @@ public class DataTransfer {
 		this.list = list;
 	}
 
-	public void getMemberFields(Member member) {
+	/**
+	 * Sets all member fields with supplied Member fields (to be used only by the
+	 * back of the house because of the manipulation with sensitive data)
+	 * 
+	 * @param member - the Member object who's fields are to be loaded to the
+	 *               DataTransfer
+	 */
+	public void setMemberFields(Member member) {
 		memberName = member.getName();
 		memberId = member.getId();
 		memberAddress = member.getAddress();
@@ -154,7 +182,14 @@ public class DataTransfer {
 		memberFeePaid = member.getFeePaid();
 	}
 
-	public void getProductFields(Product product) {
+	/**
+	 * Sets all product fields with supplied Product fields (to be used only by the
+	 * back of the house because of the manipulation with sensitive data)
+	 * 
+	 * @param product - the Product object who's fields are to be loaded to the
+	 *                DataTransfer
+	 */
+	public void setProductFields(Product product) {
 		productName = product.getName();
 		productId = product.getId();
 		productStockOnHand = product.getStockOnHand();
