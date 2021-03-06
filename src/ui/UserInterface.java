@@ -337,25 +337,22 @@ public class UserInterface implements Serializable {
 	 */
 	public void removeMember() {
 
-		do {
-			Request.instance().setMemberId(getString("Enter member's ID to be removed:", "Invalid input."));
-			Result result = groceryStore.removeMember(Request.instance());
+		Request.instance().setMemberId(getString("Enter member's ID to be removed:", "Invalid input."));
+		Result result = groceryStore.removeMember(Request.instance());
 
-			switch (result.getResultCode()) {
-			case Result.INVALID_MEMBER_ID:
-				System.out
-						.println("No such member with id: " + Request.instance().getMemberId() + ", at grocery store");
-				break;
-			case Result.ACTION_FAILED:
-				System.out.println("Member could not be removed");
-				break;
-			case Result.ACTION_SUCCESSFUL:
-				System.out.println("Member has been removed");
-				break;
-			default:
-				System.out.println("An error has occured");
-			}
-		} while (getYesOrNo("Remove more members?", yesNoErrorMessage));
+		switch (result.getResultCode()) {
+		case Result.INVALID_MEMBER_ID:
+			System.out.println("No such member with id: " + Request.instance().getMemberId() + ", at grocery store");
+			break;
+		case Result.ACTION_FAILED:
+			System.out.println("Member could not be removed");
+			break;
+		case Result.ACTION_SUCCESSFUL:
+			System.out.println("Member has been removed");
+			break;
+		default:
+			System.out.println("An error has occured");
+		}
 
 	}
 
