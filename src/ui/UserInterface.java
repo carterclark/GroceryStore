@@ -313,7 +313,7 @@ public class UserInterface implements Serializable {
 	 * Enrolls a new member. Uses Request and Result (data transfer logic) to send
 	 * information to, and retrieve it from, the facade.
 	 */
-	public void addMember() {
+	public void enrollMember() {
 		String name = getString("Enter new member's name:", "Invalid input.");
 		String address = getString("Enter member's address:", "Invalid input.");
 		String phoneNumber = String.valueOf(
@@ -336,6 +336,27 @@ public class UserInterface implements Serializable {
 	 * Removes a member from the database.
 	 */
 	public void removeMember() {
+
+		do {
+			Request.instance().setMemberId(getString("Enter member's ID to be removed:", "Invalid input."));
+			Result result = groceryStore.removeMember(Request.instance());
+
+			switch (result.getResultCode()) {
+			case Result.INVALID_MEMBER_ID:
+				System.out
+						.println("No such member with id: " + Request.instance().getMemberId() + ", at grocery store");
+				break;
+			case Result.ACTION_FAILED:
+				System.out.println("Member could not be removed");
+				break;
+			case Result.ACTION_SUCCESSFUL:
+				System.out.println("Member has been removed");
+				break;
+			default:
+				System.out.println("An error has occured");
+			}
+		} while (getYesOrNo("Remove more members?", yesNoErrorMessage));
+
 	}
 
 	/**
@@ -496,7 +517,7 @@ public class UserInterface implements Serializable {
 			System.out.println();
 			switch (action) {
 			case ENROLL_MEMBER:
-				addMember();
+				enrollMember();
 				break;
 			case REMOVE_MEMBER:
 				removeMember();
@@ -555,9 +576,11 @@ public class UserInterface implements Serializable {
 	 * @param args N/A
 	 */
 	public static void main(String[] args) {
-		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
+		System.out.println(
+				"★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 		System.out.println("★★★ WELCOME TO OUR GROCERY STORE ★★★");
-		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
+		System.out.println(
+				"★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
 		if (getYesOrNo("Would you like to load Store data from the disk?", yesNoErrorMessage)) {
 			load();
 		} else {
