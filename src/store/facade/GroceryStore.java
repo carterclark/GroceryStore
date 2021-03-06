@@ -404,6 +404,31 @@ public class GroceryStore implements Serializable {
 	}
 
 	/**
+	 * Removes a specific member from the members list
+	 * 
+	 * @param request carries the relevant member fields
+	 * @return a code representing the outcome
+	 */
+	public Result removeMember(Request request) {
+		Result result = new Result();
+
+		Member member = membersList.search(request.getMemberId());
+		if (member == null) {
+			result.setResultCode(Result.INVALID_MEMBER_ID);
+			return result;
+		}
+		result.setMemberFields(member);
+		if (membersList.removeMember(request.getMemberId())) {
+			result.setResultCode(Result.ACTION_SUCCESSFUL);
+			return result;
+		}
+
+		result.setResultCode(Result.ACTION_FAILED);
+		return result;
+
+	}
+
+	/**
 	 * Used by UI, gets the list of all members on record. (Converts an
 	 * Iterator<member> to Iterator<result>.)
 	 * 
