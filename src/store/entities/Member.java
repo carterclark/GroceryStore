@@ -5,6 +5,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 
+/**
+ * Class Member represents a single member of a small co-op grocery store.
+ * 
+ * @author
+ *
+ */
 public class Member implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -16,13 +22,22 @@ public class Member implements Serializable {
 	private String id;
 	private ArrayList<Transaction> transactions;
 
+	// static field necessary for generating member IDs automatically
 	private static int idCounter = 1;
 
-<<<<<<< HEAD
+	/**
+	 * The constructor. At the time of creation of a member object a list of his/her
+	 * transactions (checkouts) is created as well.
+	 * 
+	 * @param name        - name of the new member
+	 * @param address     - address of the new member
+	 * @param phoneNumber - phone number of the new member stored in format
+	 *                    "1234567890"
+	 * @param dateJoined  - date the member joined (the constructor doesn't assign
+	 *                    today's date to the member; the date is assigned by user
+	 * @param feePaid     - membership fee the new member paid
+	 */
 	public Member(String name, String address, String phoneNumber, Calendar dateJoined, double feePaid) {
-=======
-	public Member(String name, String address, String phoneNumber, String dateJoined, double feePaid) {
->>>>>>> upstream/main
 		this.name = name;
 		this.address = address;
 		this.phoneNumber = phoneNumber;
@@ -76,19 +91,31 @@ public class Member implements Serializable {
 		return id;
 	}
 
+	/**
+	 * Adds a new transaction (checkout) to the member.
+	 * 
+	 * @param transaction - the transaction being added
+	 */
 	public void addTransaction(Transaction transaction) {
 		transactions.add(transaction);
 	}
 
+	/**
+	 * Gets a list of the member's transactions for a specific time period.
+	 * 
+	 * @param fromDate - upper bound of the time period for the transaction list
+	 * @param toDate   - lower bound of the time period for the transaction list
+	 * @return an iterator over the desired list of transactions
+	 */
 	public Iterator<Transaction> getTransactions(Calendar fromDate, Calendar toDate) {
-		ArrayList<Transaction> result = new ArrayList<Transaction>();
+		ArrayList<Transaction> output = new ArrayList<Transaction>();
 		for (Iterator<Transaction> iterator = transactions.iterator(); iterator.hasNext();) {
 			Transaction transaction = iterator.next();
 			if (transaction.isBetweenDates(fromDate, toDate)) {
-				result.add(transaction);
+				output.add(transaction);
 			}
 		}
-		return result.iterator();
+		return output.iterator();
 	}
 
 	@Override
@@ -147,7 +174,7 @@ public class Member implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Member name: " + name;
+		return "Member name: " + name + "\tMember ID: " + id;
 	}
 
 }

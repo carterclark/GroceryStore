@@ -3,16 +3,31 @@ package ui;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.Scanner;
 
 import store.facade.GroceryStore;
+import store.facade.GroceryStore.CheckOut;
+import store.facade.Request;
+import store.facade.Result;
 
+/**
+ * Class UserInterface represents the front end of the house, interacting
+ * directly with the user (grocery store clerk or even a customer). It also
+ * interacts with the business logic of the back end via data transfer pattern,
+ * which is free of any business logic itself, to keep the safety at maximum.
+ * This class is a singleton.
+ * 
+ * @author
+ *
+ */
 public class UserInterface implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private static UserInterface singleton;
 	private static GroceryStore groceryStore;
 
+	// codes for available functionalities (actions) of the application
 	private static final int ENROLL_MEMBER = 1;
 	private static final int REMOVE_MEMBER = 2;
 	private static final int ADD_PRODUCT = 3;
@@ -28,10 +43,17 @@ public class UserInterface implements Serializable {
 	private static final int SAVE_DATA = 13;
 	private static final int HELP = 14;
 	private static final int EXIT = 0;
+	// action labels corresponding to the previous codes
 	private static String[] menu = new String[] { "ENROLL A NEW MEMBER", "REMOVE A MEMBER", "ADD A PRODUCT",
 			"CHECK OUT MEMBER'S ITEMS", "PROCESS SHIPMENT", "CHANGE PRODUCT PRICE", "RETRIEVE PRODUCT INFO",
 			"RETRIEVE MEMBER INFO", "PRINT MEMBER'S TRANSACTIONS", "LIST ALL OUTSTANDING ORDERS", "LIST ALL MEMBERS",
 			"LIST ALL PRODUCTS", "SAVE ALL DATA TO DISK", "HELP (DISPLAYS THIS MENU)" };
+
+	private static Scanner input = new Scanner(System.in);
+
+	// predetermined input error messages
+	private static String yesNoErrorMessage = "Please answer Y[es] or N[o].";
+	private static String memberIdEntryErrorMessage = "You should enter 'M-<number>'";
 
 	private UserInterface() {
 		groceryStore = GroceryStore.instance();
@@ -44,8 +66,17 @@ public class UserInterface implements Serializable {
 		return singleton;
 	}
 
+	// ----------------------------------------------------------------------------
+	// ------a set of helper methods collecting and error-checking user input------
+
+	/**
+	 * Collects a String input from the user.
+	 * 
+	 * @param prompt       - a custom message prompting for an input
+	 * @param errorMessage - a custom error message in case of invalid input
+	 * @return String entered by user without leading and trailing spaces
+	 */
 	public static String getString(String prompt, String errorMessage) {
-		Scanner input = new Scanner(System.in);
 		String read = "";
 		boolean error = true;
 		while (error) {
@@ -62,8 +93,14 @@ public class UserInterface implements Serializable {
 		return read;
 	}
 
+	/**
+	 * Collects a non-negative integer input from the user.
+	 * 
+	 * @param prompt       - a custom message prompting for an integer input
+	 * @param errorMessage - a custom error message in case of invalid input
+	 * @return non-negative integer entered by user
+	 */
 	public static int getInt(String prompt, String errorMessage) {
-		Scanner input = new Scanner(System.in);
 		String read = "";
 		int value = 0;
 		boolean error = true;
@@ -76,6 +113,9 @@ public class UserInterface implements Serializable {
 			} else {
 				try {
 					value = Integer.parseInt(read);
+					if (value < 0) {
+						error = true;
+					}
 				} catch (Exception exception) {
 					error = true;
 				}
@@ -87,8 +127,48 @@ public class UserInterface implements Serializable {
 		return value;
 	}
 
+	/**
+	 * Collects a long input from the user. Also suitable for inputting phone
+	 * numbers.
+	 * 
+	 * @param prompt       - a custom message prompting for a number (type long)
+	 *                     input
+	 * @param errorMessage - a custom error message in case of invalid input
+	 * @return number (type long) entered by user
+	 */
+	public static long getLong(String prompt, String errorMessage) {
+		String read = "";
+		long value = 0;
+		boolean error = true;
+		while (error) {
+			error = false;
+			System.out.print(prompt + " ");
+			read = input.nextLine().trim();
+			if (read.equals("")) {
+				error = true;
+			} else {
+				try {
+					value = Long.parseLong(read);
+				} catch (Exception exception) {
+					error = true;
+				}
+			}
+			if (error) {
+				System.out.println(errorMessage);
+			}
+		}
+		return value;
+	}
+
+	/**
+	 * Collects a double input from the user.
+	 * 
+	 * @param prompt       - a custom message prompting for a number (type double)
+	 *                     input
+	 * @param errorMessage - a custom error message in case of invalid input
+	 * @return number (type double) entered by user
+	 */
 	public static double getDouble(String prompt, String errorMessage) {
-		Scanner input = new Scanner(System.in);
 		String read = "";
 		double value = 0;
 		boolean error = true;
@@ -112,8 +192,14 @@ public class UserInterface implements Serializable {
 		return value;
 	}
 
+	/**
+	 * Collects a date input from the user. Requires an input in format MMDDYYYY.
+	 * 
+	 * @param prompt       - a custom message prompting for a date input
+	 * @param errorMessage - a custom error message in case of invalid input
+	 * @return date entered by user (type Calendar)
+	 */
 	public static Calendar getDate(String prompt, String errorMessage) {
-		Scanner input = new Scanner(System.in);
 		String read = "";
 		boolean error = true;
 		Calendar date = new GregorianCalendar();
@@ -146,8 +232,17 @@ public class UserInterface implements Serializable {
 		return date;
 	}
 
+	/**
+	 * Collects a yes-or-no input from the user. If the first letter of the response
+	 * (trimmed of the leading and trailing spaces) is "Y" or "N" (case
+	 * NON-sensitive) it will return corresponding answer.
+	 * 
+	 * @param prompt       - a custom message prompting for a yes-or-no input
+	 * @param errorMessage - a custom error message in case of invalid input
+	 * @return TRUE if the user response corresponds to <yes>, FALSE if the response
+	 *         corresponds to <no>
+	 */
 	public static boolean getYesOrNo(String prompt, String errorMessage) {
-		Scanner input = new Scanner(System.in);
 		String read = "";
 		char answer = ' ';
 		boolean error = true;
@@ -170,75 +265,256 @@ public class UserInterface implements Serializable {
 		return (answer == 'Y');
 	}
 
+	// -----------------the end of the user input helper methods-------------------
+	// ----------------------------------------------------------------------------
+
+	/**
+	 * Gets current date and time in the Calendar type.
+	 * 
+	 * @return date and time of right now
+	 */
 	public static Calendar getToday() {
 		Calendar date = new GregorianCalendar();
 		date.setTimeInMillis(System.currentTimeMillis());
 		return date;
 	}
 
-	public static void help() {
+	/**
+	 * Displays a menu of action options (functionalities).
+	 */
+	public void help() {
 		String output = "\n Your options:\n================================\n";
 		for (int counter = 0; counter < 14; counter++) {
 			output += String.format("%2s", (counter + 1)) + " = " + menu[counter] + "\n";
 		}
-		output += "--------------------------------\n 0 = EXIT PROGRAM\n";
+		output += "--------------------------------\n 0 = EXIT PROGRAM";
 		System.out.println(output);
 	}
 
+	/**
+	 * Retrieves the grocery store data from the disk.
+	 */
 	public static void load() {
 	}
 
-	public static void save() {
+	/**
+	 * Saves the grocery data to the disk.
+	 */
+	public void save() {
 	}
 
-	public static void testBed() {
+	/**
+	 * Runs a test bed with predetermined sets of data applied on the grocery store.
+	 */
+	public void testBed() {
 	}
 
-	public static void addMember() {
+	/**
+	 * Enrolls a new member. Uses Request and Result (data transfer logic) to send
+	 * information to, and retrieve it from, the facade.
+	 */
+	public void enrollMember() {
+		String name = getString("Enter new member's name:", "Invalid input.");
+		String address = getString("Enter member's address:", "Invalid input.");
+		String phoneNumber = String.valueOf(
+				getLong("Enter member's phone number (in format 1234567890):", "You didn't enter a phone number."));
+		double feePaid = getDouble("Enter member fee paid:", "You didn't enter a number.");
+		Request.instance().setMemberName(name);
+		Request.instance().setMemberAddress(address);
+		Request.instance().setMemberPhoneNumber(phoneNumber);
+		Request.instance().setMemberFeePaid(feePaid);
+		Request.instance().setMemberDateJoined(getToday());
+		Result result = groceryStore.addMember(Request.instance());
+		if (result.getResultCode() == Result.ACTION_SUCCESSFUL) {
+			System.out.println("\nMember added. Member ID = " + result.getMemberId() + ".");
+		} else {
+			System.out.println("\nMember couldn't be added.");
+		}
 	}
 
-	public static void removeMember() {
+	/**
+	 * Removes a member from the database.
+	 */
+	public void removeMember() {
+
+		Request.instance().setMemberId(getString("Enter member's ID to be removed:", "Invalid input."));
+		Result result = groceryStore.removeMember(Request.instance());
+
+		switch (result.getResultCode()) {
+		case Result.INVALID_MEMBER_ID:
+			System.out.println("No such member with id: " + Request.instance().getMemberId() + ", at grocery store");
+			break;
+		case Result.ACTION_FAILED:
+			System.out.println("Member could not be removed");
+			break;
+		case Result.ACTION_SUCCESSFUL:
+			System.out.println("Member has been removed");
+			break;
+		default:
+			System.out.println("An error has occured");
+		}
+
 	}
 
-	public static void addProduct() {
+	/**
+	 * Adds a product to the database.
+	 */
+	public void addProduct() {
 	}
 
-	public static void checkOut() {
+	/**
+	 * Performs a member's checkout. ("Buying items".)
+	 */
+	public void checkOut() {
+		String memberId = getString("Enter member's ID:", memberIdEntryErrorMessage);
+		// next if clause is carried out if the member exists
+		if (groceryStore.validateMemberId(memberId)) {
+			// opening a checkout
+			CheckOut checkOut = groceryStore.new CheckOut(memberId);
+			// do the loop until there are no more items to check out
+			do {
+				System.out.println();
+				// loading request (data transfer logic) with relevant information
+				Request.instance()
+						.setProductId(getString("Enter item's product ID:", "You should enter a product ID."));
+				Request.instance().setOrderQuantity(getInt("Enter item quantity:", "Not a valid number."));
+				// carrying out the addItem of CheckOut class (inner class of GroceryStore) and
+				// returning the corresponding info (result code, result's product fields, and
+				// order quantity, in order to display it
+				Result result = checkOut.addItem(Request.instance());
+				switch (result.getResultCode()) {
+				case Result.ACTION_SUCCESSFUL:
+					System.out.println("Item added to checkout:");
+					System.out.println(result.getOrderQuantity() + "x " + result.getProductName() + " ("
+							+ String.format("$%.2f", result.getProductCurrentPrice()) + "/unit) "
+							+ String.format("$%.2f", (result.getProductCurrentPrice() * result.getOrderQuantity())));
+					break;
+				case Result.ACTION_FAILED:
+					System.out.println("Unable to check out item.");
+					break;
+				case Result.INVALID_PRODUCT_ID:
+					System.out.println("Invalid product ID. Unable to check out item.");
+					break;
+				case Result.INVALID_ORDER_QUANTITY:
+					System.out.println("Invalid item quantity. Unable to check out item.");
+					break;
+				}
+			} while (getYesOrNo("More items to check out?", yesNoErrorMessage));
+			// displaying total
+			System.out.println("\nYOUR TOTAL IS: " + String.format("$%.2f", checkOut.getTotalPrice()) + "\n");
+			// the clerk confirms and collects physical cash OR doesn't confirm and thereby
+			// cancels the checkout
+			if (getYesOrNo("Transaction confirmed by collecting cash?", yesNoErrorMessage)) {
+				System.out.println("Checkout successful. We thank you.");
+				// performing checkout close, which adds a transaction ( = checkout) to member's
+				// history and reorders product(s) which got low in supply if necessary;
+				// returned is an iterator over a list of products (stored in a list of results
+				// for safety) that were reordered (to display) - if the list is empty no
+				// product had to be reordered
+				Iterator<Result> iterator = checkOut.closeCheckOut();
+				if (iterator.hasNext()) {
+					System.out.println();
+					// for loop prints the reordered products
+					for (Iterator<Result> counter = iterator; counter.hasNext();) {
+						Result result = counter.next();
+						System.out.println("Item " + result.getProductName() + " will be reordered. (Order quantity: "
+								+ result.getOrderQuantity() + ", order number: " + result.getOrderId() + ".)");
+					}
+				}
+			} else {
+				// in case the checkout is cancelled, the cancelCheckOut of CheckOut class
+				// (inner class of GroceryStore) is performed; it rolls back any quantities
+				// subtracted from the product supplies and deletes the checkout
+				Result result = checkOut.cancelCheckOut();
+				if (result.getResultCode() == Result.ACTION_SUCCESSFUL) {
+					System.out.println("Checkout successfully canceled.");
+				} else {
+					System.out.println("Checkout not open. Please try again.");
+				}
+			}
+		} else {
+			System.out.println("Sorry, no such member.");
+		}
 	}
 
-	public static void processShipment() {
+	public void processShipment() {
 	}
 
-	public static void changePrice() {
+	public void changePrice() {
 	}
 
-	public static void getProductInfo() {
+	public void getProductInfo() {
 	}
 
-	public static void getMemberInfo() {
+	public void getMemberInfo() {
 	}
 
-	public static void printTransactions() {
+	public void printTransactions() {
 	}
 
-	public static void listOutstandingOrders() {
+	public void listOutstandingOrders() {
 	}
 
-	public static void listMembers() {
+	/**
+	 * Displays all members in the database.
+	 */
+	public void listMembers() {
+		// returns an iterator on the list of members (safely stored in a list of
+		// results (data transfer logic)) in order to display it
+		Iterator<Result> iterator = groceryStore.getAllMembers();
+		// next if clause is carried out if the database of members is non-empty
+		if (iterator.hasNext()) {
+			// displays the header of the table
+			System.out.println(String.format("%-9s", "Member ID") + ", " + String.format("%-23s", "Name") + ", "
+					+ String.format("%-28s", "Address") + ", " + String.format("%-11s", "Ph. number") + ", "
+					+ String.format("%-10s", "Joined"));
+			System.out.println("-".repeat(89));
+			// for loop prints all members
+			for (Iterator<Result> counter = iterator; counter.hasNext();) {
+				Result result = counter.next();
+				// fields fittedName and fittedAddress store trimmed off versions of name and
+				// address to fit in the table in case they're too long
+				String fittedName, fittedAddress;
+				if (result.getMemberName().length() > 23) {
+					fittedName = result.getMemberName().substring(0, 23);
+				} else {
+					fittedName = result.getMemberName();
+				}
+				if (result.getMemberAddress().length() > 28) {
+					fittedAddress = result.getMemberAddress().substring(0, 28);
+				} else {
+					fittedAddress = result.getMemberAddress();
+				}
+				System.out.println(String.format("%-9s", result.getMemberId()) + ", "
+						+ String.format("%-23s", fittedName) + ", " + String.format("%-28s", fittedAddress) + ", "
+						+ String.format("%-11s", result.getMemberPhoneNumber()) + ", "
+						+ String.format("%1$tm/%1$td/%1$tY", result.getMemberDateJoined()));
+			}
+		} else {
+			// in case the member database is empty
+			System.out.println("No members registred.");
+		}
 	}
 
-	public static void listProducts() {
+	/**
+	 * Lists all products in the database.
+	 */
+	public void listProducts() {
 	}
 
-	public static void loop() {
+	/**
+	 * Performs the main looping around the commands being issued by the user.
+	 */
+	public void loop() {
 		int action;
-		instance();
+		help();
+		System.out.println();
 		do {
-			help();
-			action = getInt("Enter option number:", "Not a valid option number.");
+			action = getInt("Enter option number (" + HELP + " for help):", "Not a valid option number.");
+			System.out.println();
 			switch (action) {
 			case ENROLL_MEMBER:
-				addMember();
+				enrollMember();
 				break;
 			case REMOVE_MEMBER:
 				removeMember();
@@ -277,6 +553,7 @@ public class UserInterface implements Serializable {
 				save();
 				break;
 			case HELP:
+				help();
 				break;
 			case EXIT:
 				break;
@@ -284,30 +561,41 @@ public class UserInterface implements Serializable {
 				System.out.println("Not a valid option number.");
 				break;
 			}
+			System.out.println();
 		} while (action != 0);
 	}
 
+	/**
+	 * Main method. Performs the welcome and good-bye, asks and loads the grocery
+	 * store data from the disk, asks and performs test bed, and asks and performs
+	 * the final save to the disk.
+	 * 
+	 * @param args N/A
+	 */
 	public static void main(String[] args) {
-		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
-		System.out.println("★★★ WELCOME TO GROCERY STORE ★★★");
-		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
-		if (getYesOrNo("Would you like to load Store data from the disk?", "Please answer Y[es] or N[o].")) {
+		System.out.println(
+				"★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
+		System.out.println("★★★ WELCOME TO OUR GROCERY STORE ★★★");
+		System.out.println(
+				"★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
+		if (getYesOrNo("Would you like to load Store data from the disk?", yesNoErrorMessage)) {
 			load();
 		} else {
+			instance();
 			System.out.println();
 			if (getYesOrNo("Do you wish to generate a test bed and\ninvoke the functionality using asserts?",
-					"Please answer Y[es] or N[o].")) {
-				testBed();
+					yesNoErrorMessage)) {
+				instance().testBed();
 			} else {
 				System.out.println("\nStarting a new, empty Grocery Store...");
 			}
 		}
-		loop();
-		System.out.println();
-		if (getYesOrNo("Would you like to save current Store data to disk?", "Please answer Y[es] or N[o].")) {
-			save();
+		instance().loop();
+		if (getYesOrNo("Would you like to save current Grocery Store data to disk?", yesNoErrorMessage)) {
+			instance().save();
 		}
 		System.out.println("\nThank you for using our Grocery Store!\nPlease come again soon!\n\nGOOD-BYE.\n");
+		input.close();
 	}
 
 }

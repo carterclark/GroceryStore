@@ -2,6 +2,14 @@ package store.entities;
 
 import java.io.Serializable;
 
+/**
+ * 
+ * Class Item represents a single item of a Transaction. In a grocery store
+ * environment, it can be understood as a single line on a check out receipt.
+ * 
+ * @author
+ *
+ */
 public class Item implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -11,6 +19,14 @@ public class Item implements Serializable {
 	private double unitPrice;
 	private double itemPrice;
 
+	/**
+	 * The constructor.
+	 * 
+	 * @param name      - product name of the item checked out
+	 * @param productId - product ID of the item checked out
+	 * @param quantity  - quantity of the item checked out
+	 * @param unitPrice - price of a single quantity of the item checked out
+	 */
 	public Item(String name, String productId, int quantity, double unitPrice) {
 		this.name = name;
 		this.productId = productId;
@@ -18,6 +34,8 @@ public class Item implements Serializable {
 		this.unitPrice = unitPrice;
 		this.itemPrice = quantity * unitPrice;
 	}
+
+	// no setters necessary; all fields set just once - in the constructor
 
 	public String getName() {
 		return name;
