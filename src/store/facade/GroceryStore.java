@@ -26,6 +26,9 @@ public class GroceryStore implements Serializable {
 	private MembersList membersList = new MembersList();
 	private ProductsList productsList = new ProductsList();
 	private OrdersList ordersList = new OrdersList();
+	// the following static fields are used by CheckOut class (inner class of
+	// GroceryStore) allowing for just instance of a checkout - they do not need to
+	// be serialized
 	private static Transaction checkOut = null;
 	private static boolean checkOutOpen = false;
 	private static String checkOutMemberId;
@@ -38,7 +41,7 @@ public class GroceryStore implements Serializable {
 	 * @author
 	 *
 	 */
-	private class MembersList implements Iterable<Member>, Serializable {
+	private class MembersList implements Iterable<Member>, GroceryStoreList<Member>, Serializable {
 
 		private static final long serialVersionUID = 1L;
 		private ArrayList<Member> members = new ArrayList<Member>();
@@ -49,9 +52,12 @@ public class GroceryStore implements Serializable {
 		 * @param member - the Member being added
 		 * @return the new member's ID
 		 */
-		public String addMember(Member member) {
-			members.add(member);
-			return members.get(members.size() - 1).getId();
+		public String add(Member member) {
+			if (members.add(member)) {
+				return members.get(members.size() - 1).getId();
+			} else {
+				return "";
+			}
 		}
 
 		/**
@@ -60,7 +66,7 @@ public class GroceryStore implements Serializable {
 		 * @param id - the unique ID of the member to be removed
 		 * @return TRUE if the member was removed, FALSE if the member was not removed
 		 */
-		public boolean removeMember(String id) {
+		public boolean remove(String id) {
 			for (Member member : members) {
 				if (member.getId().equalsIgnoreCase(id)) {
 					members.remove(member);
@@ -105,7 +111,7 @@ public class GroceryStore implements Serializable {
 	 * @author
 	 *
 	 */
-	private class ProductsList implements Iterable<Product>, Serializable {
+	private class ProductsList implements Iterable<Product>, GroceryStoreList<Product>, Serializable {
 
 		private static final long serialVersionUID = 1L;
 		private ArrayList<Product> products = new ArrayList<Product>();
@@ -116,8 +122,12 @@ public class GroceryStore implements Serializable {
 		 * @param product - the Product being added
 		 * @return TRUE if successfully added, FALSE if not added
 		 */
-		public boolean addProduct(Product product) {
-			return products.add(product);
+		public String add(Product product) {
+			if (products.add(product)) {
+				return products.get(products.size() - 1).getId();
+			} else {
+				return "";
+			}
 		}
 
 		/**
@@ -155,7 +165,7 @@ public class GroceryStore implements Serializable {
 	 * @author
 	 *
 	 */
-	private class OrdersList implements Iterable<Order>, Serializable {
+	private class OrdersList implements Iterable<Order>, GroceryStoreList<Order>, Serializable {
 
 		private static final long serialVersionUID = 1L;
 		private ArrayList<Order> orders = new ArrayList<Order>();
@@ -166,9 +176,23 @@ public class GroceryStore implements Serializable {
 		 * @param order - the Order being added
 		 * @return the new order number
 		 */
-		public String addOrder(Order order) {
-			orders.add(order);
-			return orders.get(orders.size() - 1).getOrderNumber();
+		public String add(Order order) {
+			if (orders.add(order)) {
+				return orders.get(orders.size() - 1).getOrderNumber();
+			} else {
+				return "";
+			}
+
+		}
+
+		public Order search(String id) {
+			for (Iterator<Order> iterator = orders.iterator(); iterator.hasNext();) {
+				Order order = iterator.next();
+				if (order.getOrderNumber().equalsIgnoreCase(id)) {
+					return order;
+				}
+			}
+			return null;
 		}
 
 		/**
@@ -340,18 +364,10 @@ public class GroceryStore implements Serializable {
 					// next if clause is carried out if the product stock is low AND the product
 					// doesn't have a pending order
 					if (product.getStockOnHand() <= product.getReorderLevel() && !product.isOrdered()) {
-						// a new order for a product (from a vendor) is placed
-						result.setOrderId(ordersList.addOrder(
-								new Order(product.getName(), product.getId(), product.getReorderLevel() * 2)));
-						// result fields for this product (for the particular iteration of the for loop)
-						// are filled with relevant information (reordered product's fields and quantity
-						// ordered)
-						result.setProductFields(product);
-						result.setOrderQuantity(product.getReorderLevel() * 2);
-						// the result code is set
-						result.setResultCode(Result.ACTION_SUCCESSFUL);
-						// this product is marked as ordered (pending order)
-						product.setOrdered(true);
+						// a new order for a product (from a vendor) is placed and all relevant info
+						// returned as a Result (for the particular product corresponding to the
+						// iteration of the for loop)
+						result = reorderProduct(product);
 						// this result with fields indicating a reordered product is added to the list
 						list.add(result);
 					}
@@ -391,7 +407,7 @@ public class GroceryStore implements Serializable {
 		String memberId = "";
 		// member is added to membersList using MembersList method and request's member
 		// fields
-		memberId = membersList.addMember(new Member(request.getMemberName(), request.getMemberAddress(),
+		memberId = membersList.add(new Member(request.getMemberName(), request.getMemberAddress(),
 				request.getMemberPhoneNumber(), request.getMemberDateJoined(), request.getMemberFeePaid()));
 		// result is filled with relevant information (member ID and result code)
 		result.setMemberId(memberId);
@@ -418,7 +434,7 @@ public class GroceryStore implements Serializable {
 			return result;
 		}
 		result.setMemberFields(member);
-		if (membersList.removeMember(request.getMemberId())) {
+		if (membersList.remove(request.getMemberId())) {
 			result.setResultCode(Result.ACTION_SUCCESSFUL);
 			return result;
 		}
@@ -463,6 +479,35 @@ public class GroceryStore implements Serializable {
 	 */
 	public boolean validateProductId(String productId) {
 		return (productsList.search(productId) != null);
+	}
+
+	/**
+	 * A private method of GroceryStore. Reorders a given product to twice the
+	 * amount of its reorder level.
+	 * 
+	 * @param product - the product to be reordered
+	 * @return Result object with all necessary fields filled (order number, all
+	 *         product fields, quantity ordered, and result code)
+	 */
+	private Result reorderProduct(Product product) {
+		Result result = new Result();
+		// result field orderId (that needs to be returned) is set in a one-step process
+		// along with the creation of a new order
+		result.setOrderId(ordersList.add(new Order(product.getName(), product.getId(), product.getReorderLevel() * 2)));
+		// next if clause is carried out if the placing of the order was unsuccessful
+		if (result.getOrderId().equals("")) {
+			result.setResultCode(Result.ACTION_FAILED);
+		} else {
+			// result fields for this product are filled with relevant information
+			// (reordered product's fields and quantity ordered)
+			result.setProductFields(product);
+			result.setOrderQuantity(product.getReorderLevel() * 2);
+			// the result code is set
+			result.setResultCode(Result.ACTION_SUCCESSFUL);
+			// this product is marked as ordered (pending order)
+			product.setOrdered(true);
+		}
+		return result;
 	}
 
 }
