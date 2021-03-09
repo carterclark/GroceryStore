@@ -29,6 +29,9 @@ public class AutomatedTester {
 		makeDates();
 		for (int index = 0; index < members.length; index++) {
 			Request.instance().setMemberName(names[index]);
+
+			System.out.println(Request.instance().getMemberName());
+
 			Request.instance().setMemberAddress(addresses[index]);
 			Request.instance().setMemberPhoneNumber(phones[index]);
 			Request.instance().setMemberDateJoined(dates[index]);
