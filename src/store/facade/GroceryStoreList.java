@@ -4,6 +4,6 @@ public interface GroceryStoreList<E> {
 
 	public String add(E object);
 
-	public E search(String id);
+	public E searchById(String id);
 
 }
