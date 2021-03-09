@@ -13,10 +13,10 @@ public class Product implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private String name;
+	private String id;
 	private double currentPrice;
 	private int stockOnHand;
 	private int reorderLevel;
-	private String id;
 	// isOrdered field indicates if the product is back-ordered (in the process of
 	// being delivered) to facilitate control over subsequent orders
 	private boolean isOrdered;

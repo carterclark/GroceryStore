@@ -337,7 +337,7 @@ public class UserInterface implements Serializable {
 	 */
 	public void removeMember() {
 
-		Request.instance().setMemberId(getString("Enter member's ID to be removed:", "Invalid input."));
+		Request.instance().setMemberId(getString("Enter member's ID to be removed: ", "Invalid input."));
 		Result result = groceryStore.removeMember(Request.instance());
 
 		switch (result.getResultCode()) {
@@ -360,6 +360,20 @@ public class UserInterface implements Serializable {
 	 * Adds a product to the database.
 	 */
 	public void addProduct() {
+		do {
+			String name = getString("Enter product's name: ", "Invalid input.");
+			String id = getString("Enter product's id: ", "Invalid input.");
+			double currentPrice = Double.parseDouble(getString("Enter product's current price: ", "Invalid input."));
+			int stockOnHand = Integer.parseInt(getString("Enter product's stock on hand: ", "Invalid input."));
+			int reorderedLevel = Integer.parseInt(getString("Enter product's reorder level: ", "Invalid input."));
+
+			Request.instance().setProductName(name);
+			Request.instance().setProductId(id);
+			Request.instance().setProductCurrentPrice(currentPrice);
+			Request.instance().setProductStockOnHand(stockOnHand);
+			Request.instance().setProductReorderLevel(reorderedLevel);
+		} while (getYesOrNo("Add another product?", yesNoErrorMessage));
+
 	}
 
 	/**
