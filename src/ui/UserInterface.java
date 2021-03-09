@@ -53,7 +53,7 @@ public class UserInterface implements Serializable {
 
 	// predetermined input error messages
 	private static String yesNoErrorMessage = "Please answer Y[es] or N[o].";
-	private static String memberIdEntryErrorMessage = "You should enter 'M-<number>'";
+	private static String emptyEntryErrorMessage = "Empty input is not allowed.";
 
 	private UserInterface() {
 		groceryStore = GroceryStore.instance();
@@ -76,7 +76,7 @@ public class UserInterface implements Serializable {
 	 * @param errorMessage - a custom error message in case of invalid input
 	 * @return String entered by user without leading and trailing spaces
 	 */
-	public static String getString(String prompt, String errorMessage) {
+	public static String getString(String prompt) {
 		String read = "";
 		boolean error = true;
 		while (error) {
@@ -87,7 +87,7 @@ public class UserInterface implements Serializable {
 				error = true;
 			}
 			if (error) {
-				System.out.println(errorMessage);
+				System.out.println(emptyEntryErrorMessage);
 			}
 		}
 		return read;
@@ -106,19 +106,14 @@ public class UserInterface implements Serializable {
 		boolean error = true;
 		while (error) {
 			error = false;
-			System.out.print(prompt + " ");
-			read = input.nextLine().trim();
-			if (read.equals("")) {
-				error = true;
-			} else {
-				try {
-					value = Integer.parseInt(read);
-					if (value < 0) {
-						error = true;
-					}
-				} catch (Exception exception) {
+			read = getString(prompt);
+			try {
+				value = Integer.parseInt(read);
+				if (value < 0) {
 					error = true;
 				}
+			} catch (Exception exception) {
+				error = true;
 			}
 			if (error) {
 				System.out.println(errorMessage);
@@ -142,16 +137,11 @@ public class UserInterface implements Serializable {
 		boolean error = true;
 		while (error) {
 			error = false;
-			System.out.print(prompt + " ");
-			read = input.nextLine().trim();
-			if (read.equals("")) {
+			read = getString(prompt);
+			try {
+				value = Long.parseLong(read);
+			} catch (Exception exception) {
 				error = true;
-			} else {
-				try {
-					value = Long.parseLong(read);
-				} catch (Exception exception) {
-					error = true;
-				}
 			}
 			if (error) {
 				System.out.println(errorMessage);
@@ -174,16 +164,11 @@ public class UserInterface implements Serializable {
 		boolean error = true;
 		while (error) {
 			error = false;
-			System.out.print(prompt + " ");
-			read = input.nextLine().trim();
-			if (read.equals("")) {
+			read = getString(prompt);
+			try {
+				value = Double.parseDouble(read);
+			} catch (Exception exception) {
 				error = true;
-			} else {
-				try {
-					value = Double.parseDouble(read);
-				} catch (Exception exception) {
-					error = true;
-				}
 			}
 			if (error) {
 				System.out.println(errorMessage);
@@ -208,8 +193,7 @@ public class UserInterface implements Serializable {
 		int year = 0;
 		while (error) {
 			error = false;
-			System.out.print(prompt + " (MMDDYYYY) ");
-			read = input.nextLine().trim();
+			read = getString(prompt + " (MMDDYYYY) ");
 			if (read.length() < 8) {
 				error = true;
 			} else {
@@ -242,24 +226,19 @@ public class UserInterface implements Serializable {
 	 * @return TRUE if the user response corresponds to <yes>, FALSE if the response
 	 *         corresponds to <no>
 	 */
-	public static boolean getYesOrNo(String prompt, String errorMessage) {
+	public static boolean getYesOrNo(String prompt) {
 		String read = "";
 		char answer = ' ';
 		boolean error = true;
 		while (error) {
 			error = false;
-			System.out.print(prompt + " (Y/N) ");
-			read = input.nextLine().trim();
-			if (read.equals("")) {
+			read = getString(prompt + " (Y/N) ");
+			answer = read.toUpperCase().charAt(0);
+			if ((answer != 'Y') && (answer != 'N')) {
 				error = true;
-			} else {
-				answer = read.toUpperCase().charAt(0);
-				if ((answer != 'Y') && (answer != 'N')) {
-					error = true;
-				}
 			}
 			if (error) {
-				System.out.println(errorMessage);
+				System.out.println(yesNoErrorMessage);
 			}
 		}
 		return (answer == 'Y');
@@ -314,8 +293,8 @@ public class UserInterface implements Serializable {
 	 * information to, and retrieve it from, the facade.
 	 */
 	public void enrollMember() {
-		String name = getString("Enter new member's name:", "Invalid input.");
-		String address = getString("Enter member's address:", "Invalid input.");
+		String name = getString("Enter new member's name:");
+		String address = getString("Enter member's address:");
 		String phoneNumber = String.valueOf(
 				getLong("Enter member's phone number (in format 1234567890):", "You didn't enter a phone number."));
 		double feePaid = getDouble("Enter member fee paid:", "You didn't enter a number.");
@@ -336,43 +315,48 @@ public class UserInterface implements Serializable {
 	 * Removes a member from the database.
 	 */
 	public void removeMember() {
+		Request.instance().setMemberId(getString("Enter member's ID to be removed:"));
 
-		Request.instance().setMemberId(getString("Enter member's ID to be removed: ", "Invalid input."));
 		Result result = groceryStore.removeMember(Request.instance());
 
 		switch (result.getResultCode()) {
 		case Result.INVALID_MEMBER_ID:
-			System.out.println("No such member with id: " + Request.instance().getMemberId() + ", at grocery store");
+			System.out
+					.println("No such member with id: " + Request.instance().getMemberId() + ", at the grocery store.");
 			break;
 		case Result.ACTION_FAILED:
-			System.out.println("Member could not be removed");
+			System.out.println("Member could not be removed.");
 			break;
 		case Result.ACTION_SUCCESSFUL:
-			System.out.println("Member has been removed");
+			System.out.println("Member has been removed.");
 			break;
 		default:
-			System.out.println("An error has occured");
+			System.out.println("An error has occured.");
 		}
 
 	}
 
 	/**
-	 * Adds a product to the database.
+	 * Adds a product to the database. first should check if the entered product ID
+	 * already exists
 	 */
 	public void addProduct() {
 		do {
-			String name = getString("Enter product's name: ", "Invalid input.");
-			String id = getString("Enter product's id: ", "Invalid input.");
-			double currentPrice = Double.parseDouble(getString("Enter product's current price: ", "Invalid input."));
-			int stockOnHand = Integer.parseInt(getString("Enter product's stock on hand: ", "Invalid input."));
-			int reorderedLevel = Integer.parseInt(getString("Enter product's reorder level: ", "Invalid input."));
+			String name = getString("Enter product's name: ");
+			String id = getString("Enter product's id: ");
+			if (id.equalsIgnoreCase("yes")) {
+
+			}
+			double currentPrice = Double.parseDouble(getString("Enter product's current price: "));
+			int stockOnHand = Integer.parseInt(getString("Enter product's stock on hand: "));
+			int reorderedLevel = Integer.parseInt(getString("Enter product's reorder level: "));
 
 			Request.instance().setProductName(name);
 			Request.instance().setProductId(id);
 			Request.instance().setProductCurrentPrice(currentPrice);
 			Request.instance().setProductStockOnHand(stockOnHand);
 			Request.instance().setProductReorderLevel(reorderedLevel);
-		} while (getYesOrNo("Add another product?", yesNoErrorMessage));
+		} while (getYesOrNo("Add another product?"));
 
 	}
 
@@ -380,7 +364,7 @@ public class UserInterface implements Serializable {
 	 * Performs a member's checkout. ("Buying items".)
 	 */
 	public void checkOut() {
-		String memberId = getString("Enter member's ID:", memberIdEntryErrorMessage);
+		String memberId = getString("Enter member's ID (M-<number>):");
 		// next if clause is carried out if the member exists
 		if (groceryStore.validateMemberId(memberId)) {
 			// opening a checkout
@@ -389,8 +373,7 @@ public class UserInterface implements Serializable {
 			do {
 				System.out.println();
 				// loading request (data transfer logic) with relevant information
-				Request.instance()
-						.setProductId(getString("Enter item's product ID:", "You should enter a product ID."));
+				Request.instance().setProductId(getString("Enter item's product ID:"));
 				Request.instance().setOrderQuantity(getInt("Enter item quantity:", "Not a valid number."));
 				// carrying out the addItem of CheckOut class (inner class of GroceryStore) and
 				// returning the corresponding info (result code, result's product fields, and
@@ -413,12 +396,12 @@ public class UserInterface implements Serializable {
 					System.out.println("Invalid item quantity. Unable to check out item.");
 					break;
 				}
-			} while (getYesOrNo("More items to check out?", yesNoErrorMessage));
+			} while (getYesOrNo("More items to check out?"));
 			// displaying total
 			System.out.println("\nYOUR TOTAL IS: " + String.format("$%.2f", checkOut.getTotalPrice()) + "\n");
 			// the clerk confirms and collects physical cash OR doesn't confirm and thereby
 			// cancels the checkout
-			if (getYesOrNo("Transaction confirmed by collecting cash?", yesNoErrorMessage)) {
+			if (getYesOrNo("Transaction confirmed by collecting cash?")) {
 				System.out.println("Checkout successful. We thank you.");
 				// performing checkout close, which adds a transaction ( = checkout) to member's
 				// history and reorders product(s) which got low in supply if necessary;
@@ -522,8 +505,8 @@ public class UserInterface implements Serializable {
 	public void loop() {
 		int action;
 		help();
-		System.out.println();
 		do {
+			System.out.println();
 			action = getInt("Enter option number (" + HELP + " for help):", "Not a valid option number.");
 			System.out.println();
 			switch (action) {
@@ -575,7 +558,6 @@ public class UserInterface implements Serializable {
 				System.out.println("Not a valid option number.");
 				break;
 			}
-			System.out.println();
 		} while (action != 0);
 	}
 
@@ -592,20 +574,19 @@ public class UserInterface implements Serializable {
 		System.out.println("★★★ WELCOME TO OUR GROCERY STORE ★★★");
 		System.out.println(
 				"★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
-		if (getYesOrNo("Would you like to load Store data from the disk?", yesNoErrorMessage)) {
+		if (getYesOrNo("Would you like to load Store data from the disk?")) {
 			load();
 		} else {
 			instance();
 			System.out.println();
-			if (getYesOrNo("Do you wish to generate a test bed and\ninvoke the functionality using asserts?",
-					yesNoErrorMessage)) {
+			if (getYesOrNo("Do you wish to generate a test bed and\ninvoke the functionality using asserts?")) {
 				instance().testBed();
 			} else {
 				System.out.println("\nStarting a new, empty Grocery Store...");
 			}
 		}
 		instance().loop();
-		if (getYesOrNo("Would you like to save current Grocery Store data to disk?", yesNoErrorMessage)) {
+		if (getYesOrNo("Would you like to save current Grocery Store data to disk?")) {
 			instance().save();
 		}
 		System.out.println("\nThank you for using our Grocery Store!\nPlease come again soon!\n\nGOOD-BYE.\n");
