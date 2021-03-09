@@ -17,8 +17,9 @@ public class Result extends DataTransfer {
 	public static final int ACTION_FAILED = 1;
 	public static final int INVALID_MEMBER_ID = 2;
 	public static final int INVALID_PRODUCT_ID = 3;
-	public static final int INVALID_ORDER_NUMBER = 4;
-	public static final int INVALID_ORDER_QUANTITY = 5;
+	public static final int INVALID_PRODUCT_NAME = 4;
+	public static final int INVALID_ORDER_NUMBER = 5;
+	public static final int INVALID_ORDER_QUANTITY = 6;
 
 	private int resultCode;
 

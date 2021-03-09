@@ -337,16 +337,15 @@ public class UserInterface implements Serializable {
 	}
 
 	/**
-	 * Adds a product to the database. first should check if the entered product ID
-	 * already exists
+	 * Adds a product to the database if there are no products of the same name or
+	 * id already present
 	 */
 	public void addProduct() {
+
 		do {
 			String name = getString("Enter product's name: ");
 			String id = getString("Enter product's id: ");
-			if (id.equalsIgnoreCase("yes")) {
 
-			}
 			double currentPrice = Double.parseDouble(getString("Enter product's current price: "));
 			int stockOnHand = Integer.parseInt(getString("Enter product's stock on hand: "));
 			int reorderedLevel = Integer.parseInt(getString("Enter product's reorder level: "));
@@ -356,6 +355,13 @@ public class UserInterface implements Serializable {
 			Request.instance().setProductCurrentPrice(currentPrice);
 			Request.instance().setProductStockOnHand(stockOnHand);
 			Request.instance().setProductReorderLevel(reorderedLevel);
+
+			Result result = groceryStore.addProduct(Request.instance());
+			if (result.getResultCode() != Result.ACTION_SUCCESSFUL) {
+				System.out.println("Product could not be added");
+			} else {
+				System.out.println("Product " + result.getProductName() + " added");
+			}
 		} while (getYesOrNo("Add another product?"));
 
 	}

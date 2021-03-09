@@ -123,6 +123,7 @@ public class GroceryStore implements Serializable {
 		 * @return TRUE if successfully added, FALSE if not added
 		 */
 		public String add(Product product) {
+
 			if (products.add(product)) {
 				return products.get(products.size() - 1).getId();
 			} else {
@@ -144,6 +145,16 @@ public class GroceryStore implements Serializable {
 				}
 			}
 			return null;
+		}
+
+		public boolean validateProductName(String name) {
+			for (Iterator<Product> iterator = products.iterator(); iterator.hasNext();) {
+				Product product = iterator.next();
+				if (product.getName().equalsIgnoreCase(name)) {
+					return false;
+				}
+			}
+			return true;
 		}
 
 		/**
@@ -411,7 +422,7 @@ public class GroceryStore implements Serializable {
 				request.getMemberPhoneNumber(), request.getMemberDateJoined(), request.getMemberFeePaid()));
 		// result is filled with relevant information (member ID and result code)
 		result.setMemberId(memberId);
-		if (memberId != "") {
+		if (!memberId.equalsIgnoreCase("")) {
 			result.setResultCode(Result.ACTION_SUCCESSFUL);
 		} else {
 			result.setResultCode(Result.ACTION_FAILED);
@@ -471,13 +482,44 @@ public class GroceryStore implements Serializable {
 		return (membersList.search(memberId) != null);
 	}
 
+	public Result addProduct(Request request) {
+
+		Result result = new Result();
+
+		Product product = productsList.search(request.getProductId());
+
+		if (product != null) {
+			result.setResultCode(Result.INVALID_PRODUCT_ID);
+			return result;
+		}
+
+		if (!productsList.validateProductName(request.getProductName())) {
+			result.setResultCode(Result.INVALID_PRODUCT_NAME);
+			return result;
+		}
+
+		String productId = productsList.add(new Product(request.getProductName(), request.getProductId(),
+				request.getProductCurrentPrice(), request.getProductStockOnHand(), request.getProductReorderLevel()));
+
+		if (!productId.equalsIgnoreCase("")) {
+			result.setResultCode(Result.ACTION_SUCCESSFUL);
+		}
+
+		else {
+			result.setResultCode(Result.ACTION_FAILED);
+		}
+
+		return result;
+
+	}
+
 	/**
 	 * Validates product ID.
 	 * 
 	 * @param productId - ID being validated
 	 * @return TRUE if product is on record, FALSE if product isn't on record
 	 */
-	public boolean validateProductId(String productId) {
+	public boolean validateProduct(String productId) {
 		return (productsList.search(productId) != null);
 	}
 
