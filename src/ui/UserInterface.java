@@ -100,7 +100,7 @@ public class UserInterface implements Serializable {
 	 * @param errorMessage - a custom error message in case of invalid input
 	 * @return non-negative integer entered by user
 	 */
-	public static int getInt(String prompt, String errorMessage) {
+	public static int getInteger(String prompt, String errorMessage) {
 		String read = "";
 		int value = 0;
 		boolean error = true;
@@ -315,8 +315,8 @@ public class UserInterface implements Serializable {
 	 * Removes a member from the database.
 	 */
 	public void removeMember() {
-
 		Request.instance().setMemberId(getString("Enter member's ID to be removed:"));
+
 		Result result = groceryStore.removeMember(Request.instance());
 
 		switch (result.getResultCode()) {
@@ -337,10 +337,33 @@ public class UserInterface implements Serializable {
 	}
 
 	/**
-	 * Adds a product to the database.
+	 * Adds a product to the database if there are no products of the same name or
+	 * id already present
 	 */
 	public void addProduct() {
-		// first should check if the entered product ID already exists
+
+		do {
+			String name = getString("Enter product's name: ");
+			String id = getString("Enter product's id: ");
+
+			double currentPrice = getDouble("Enter product's current price: ", "A valid number was not entered.");
+			int stockOnHand = getInteger("Enter product's stock on hand: ", "A valid integer was not entered.");
+			int reorderedLevel = getInteger("Enter product's reorder level: ", "A valid integer was not entered.");
+
+			Request.instance().setProductName(name);
+			Request.instance().setProductId(id);
+			Request.instance().setProductCurrentPrice(currentPrice);
+			Request.instance().setProductStockOnHand(stockOnHand);
+			Request.instance().setProductReorderLevel(reorderedLevel);
+
+			Result result = groceryStore.addProduct(Request.instance());
+			if (result.getResultCode() != Result.ACTION_SUCCESSFUL) {
+				System.out.println("Product could not be added");
+			} else {
+				System.out.println("Product " + result.getProductName() + " added");
+			}
+		} while (getYesOrNo("Add another product?"));
+
 	}
 
 	/**
@@ -357,7 +380,7 @@ public class UserInterface implements Serializable {
 				System.out.println();
 				// loading request (data transfer logic) with relevant information
 				Request.instance().setProductId(getString("Enter item's product ID:"));
-				Request.instance().setOrderQuantity(getInt("Enter item quantity:", "Not a valid number."));
+				Request.instance().setOrderQuantity(getInteger("Enter item quantity:", "Not a valid number."));
 				// carrying out the addItem of CheckOut class (inner class of GroceryStore) and
 				// returning the corresponding info (result code, result's product fields, and
 				// order quantity, in order to display it
@@ -490,7 +513,7 @@ public class UserInterface implements Serializable {
 		help();
 		do {
 			System.out.println();
-			action = getInt("Enter option number (" + HELP + " for help):", "Not a valid option number.");
+			action = getInteger("Enter option number (" + HELP + " for help):", "Not a valid option number.");
 			System.out.println();
 			switch (action) {
 			case ENROLL_MEMBER:
@@ -552,9 +575,11 @@ public class UserInterface implements Serializable {
 	 * @param args N/A
 	 */
 	public static void main(String[] args) {
-		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
+		System.out.println(
+				"★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 		System.out.println("★★★ WELCOME TO OUR GROCERY STORE ★★★");
-		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
+		System.out.println(
+				"★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
 		if (getYesOrNo("Would you like to load Store data from the disk?")) {
 			load();
 		} else {

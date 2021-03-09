@@ -82,7 +82,7 @@ public class GroceryStore implements Serializable {
 		 * @param id - the ID of the member searched for
 		 * @return Member object if found, null if not found
 		 */
-		public Member search(String id) {
+		public Member searchById(String id) {
 			for (Iterator<Member> iterator = members.iterator(); iterator.hasNext();) {
 				Member member = iterator.next();
 				if (member.getId().equalsIgnoreCase(id)) {
@@ -123,6 +123,7 @@ public class GroceryStore implements Serializable {
 		 * @return TRUE if successfully added, FALSE if not added
 		 */
 		public String add(Product product) {
+
 			if (products.add(product)) {
 				return products.get(products.size() - 1).getId();
 			} else {
@@ -136,7 +137,7 @@ public class GroceryStore implements Serializable {
 		 * @param id - the ID of the product searched for
 		 * @return Product object if found, null if not found
 		 */
-		public Product search(String id) {
+		public Product searchById(String id) {
 			for (Iterator<Product> iterator = products.iterator(); iterator.hasNext();) {
 				Product product = iterator.next();
 				if (product.getId().equalsIgnoreCase(id)) {
@@ -144,6 +145,16 @@ public class GroceryStore implements Serializable {
 				}
 			}
 			return null;
+		}
+
+		public boolean validateProductName(String name) {
+			for (Iterator<Product> iterator = products.iterator(); iterator.hasNext();) {
+				Product product = iterator.next();
+				if (product.getName().equalsIgnoreCase(name)) {
+					return false;
+				}
+			}
+			return true;
 		}
 
 		/**
@@ -185,7 +196,7 @@ public class GroceryStore implements Serializable {
 
 		}
 
-		public Order search(String id) {
+		public Order searchById(String id) {
 			for (Iterator<Order> iterator = orders.iterator(); iterator.hasNext();) {
 				Order order = iterator.next();
 				if (order.getOrderNumber().equalsIgnoreCase(id)) {
@@ -280,7 +291,7 @@ public class GroceryStore implements Serializable {
 		 */
 		public Result addItem(Request request) {
 			Result result = new Result();
-			Product product = productsList.search(request.getProductId());
+			Product product = productsList.searchById(request.getProductId());
 			// next if clause is carried out if there is a running checkout AND the product
 			// ID is valid AND there is enough quantity of the product on hand
 			if (checkOutOpen && product != null && product.getStockOnHand() >= request.getOrderQuantity()) {
@@ -327,7 +338,7 @@ public class GroceryStore implements Serializable {
 				// stock-on-hand (the products are "re-stocked")
 				for (Iterator<Item> iterator = checkOut.getItems(); iterator.hasNext();) {
 					Item item = iterator.next();
-					Product product = productsList.search(item.getProductId());
+					Product product = productsList.searchById(item.getProductId());
 					product.setStockOnHand(product.getStockOnHand() + item.getQuantity());
 				}
 				// checkout is annulled
@@ -352,14 +363,14 @@ public class GroceryStore implements Serializable {
 			if (checkOutOpen) {
 				// running checkout is closed
 				checkOutOpen = false;
-				Member member = membersList.search(checkOutMemberId);
+				Member member = membersList.searchById(checkOutMemberId);
 				// new transaction is added to the member
 				member.addTransaction(checkOut);
 				// for loop is iterating over the list of all items checked out to find out if
 				// any product needs to be reordered
 				for (Iterator<Item> iterator = checkOut.getItems(); iterator.hasNext();) {
 					Item item = iterator.next();
-					Product product = productsList.search(item.getProductId());
+					Product product = productsList.searchById(item.getProductId());
 					Result result = new Result();
 					// next if clause is carried out if the product stock is low AND the product
 					// doesn't have a pending order
@@ -411,7 +422,7 @@ public class GroceryStore implements Serializable {
 				request.getMemberPhoneNumber(), request.getMemberDateJoined(), request.getMemberFeePaid()));
 		// result is filled with relevant information (member ID and result code)
 		result.setMemberId(memberId);
-		if (memberId != "") {
+		if (!memberId.equalsIgnoreCase("")) {
 			result.setResultCode(Result.ACTION_SUCCESSFUL);
 		} else {
 			result.setResultCode(Result.ACTION_FAILED);
@@ -428,7 +439,7 @@ public class GroceryStore implements Serializable {
 	public Result removeMember(Request request) {
 		Result result = new Result();
 
-		Member member = membersList.search(request.getMemberId());
+		Member member = membersList.searchById(request.getMemberId());
 		if (member == null) {
 			result.setResultCode(Result.INVALID_MEMBER_ID);
 			return result;
@@ -468,7 +479,39 @@ public class GroceryStore implements Serializable {
 	 * @return TRUE if member exists, FALSE if member doesn't exits
 	 */
 	public boolean validateMemberId(String memberId) {
-		return (membersList.search(memberId) != null);
+		return (membersList.searchById(memberId) != null);
+	}
+
+	public Result addProduct(Request request) {
+
+		Result result = new Result();
+
+		Product product = productsList.searchById(request.getProductId());
+
+		if (product != null) {
+			result.setResultCode(Result.INVALID_PRODUCT_ID);
+			return result;
+		}
+
+		if (!productsList.validateProductName(request.getProductName())) {
+			result.setResultCode(Result.INVALID_PRODUCT_NAME);
+			return result;
+		}
+
+		String productId = productsList.add(new Product(request.getProductName(), request.getProductId(),
+				request.getProductCurrentPrice(), request.getProductStockOnHand(), request.getProductReorderLevel()));
+
+		if (!productId.equalsIgnoreCase("")) {
+			result.setResultCode(Result.ACTION_SUCCESSFUL);
+			reorderProduct(productsList.searchById(request.getProductId()));
+		}
+
+		else {
+			result.setResultCode(Result.ACTION_FAILED);
+		}
+
+		return result;
+
 	}
 
 	/**
@@ -478,7 +521,7 @@ public class GroceryStore implements Serializable {
 	 * @return TRUE if product is on record, FALSE if product isn't on record
 	 */
 	public boolean validateProductId(String productId) {
-		return (productsList.search(productId) != null);
+		return (productsList.searchById(productId) != null);
 	}
 
 	/**
