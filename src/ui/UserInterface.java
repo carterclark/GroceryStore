@@ -452,6 +452,10 @@ public class UserInterface implements Serializable {
 	public void processShipment() {
 	}
 
+	/**
+	 * Changes the price of a Product given an id and prints out product name and
+	 * new price
+	 */
 	public void changePrice() {
 
 		String id = getString("Enter product's id: ");
