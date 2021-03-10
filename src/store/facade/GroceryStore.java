@@ -427,6 +427,8 @@ public class GroceryStore implements Serializable {
 		} else {
 			result.setResultCode(Result.ACTION_FAILED);
 		}
+
+		result.setMemberFields(membersList.searchById(memberId));
 		return result;
 	}
 
