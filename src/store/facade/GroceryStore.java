@@ -26,12 +26,6 @@ public class GroceryStore implements Serializable {
 	private MembersList membersList = new MembersList();
 	private ProductsList productsList = new ProductsList();
 	private OrdersList ordersList = new OrdersList();
-	// the following static fields are used by CheckOut class (inner class of
-	// GroceryStore) allowing for just instance of a checkout - they do not need to
-	// be serialized
-	private static Transaction checkOut = null;
-	private static boolean checkOutOpen = false;
-	private static String checkOutMemberId;
 
 	// ------------------------MembersList Class---------------------------------
 	/**
@@ -50,7 +44,7 @@ public class GroceryStore implements Serializable {
 		 * Adds a new member to the list.
 		 * 
 		 * @param member - the Member being added
-		 * @return the new member's ID
+		 * @return the new member's ID if successful, an empty String if unsuccessful
 		 */
 		public String add(Member member) {
 			if (members.add(member)) {
@@ -119,10 +113,9 @@ public class GroceryStore implements Serializable {
 		 * Adds a new product to the list.
 		 * 
 		 * @param product - the Product being added
-		 * @return TRUE if successfully added, FALSE if not added
+		 * @return the new product's ID if successful, an empty String if unsuccessful
 		 */
 		public String add(Product product) {
-
 			if (products.add(product)) {
 				return products.get(products.size() - 1).getId();
 			} else {
@@ -174,7 +167,7 @@ public class GroceryStore implements Serializable {
 		 * Adds a new order to the list. There is only one product per order.
 		 * 
 		 * @param order - the Order being added
-		 * @return the new order number
+		 * @return the new order number if successful, an empty String if unsuccessful
 		 */
 		public String add(Order order) {
 			if (orders.add(order)) {
@@ -185,6 +178,12 @@ public class GroceryStore implements Serializable {
 
 		}
 
+		/**
+		 * Searches for an order with a particular order number/ID.
+		 * 
+		 * @param id - the ID of the order searched for
+		 * @return Order object if found, null if not found
+		 */
 		public Order searchById(String id) {
 			for (Iterator<Order> iterator = orders.iterator(); iterator.hasNext();) {
 				Order order = iterator.next();
@@ -231,14 +230,10 @@ public class GroceryStore implements Serializable {
 	 *
 	 */
 	public class CheckOut {
-		// This class is set inside the GorceryStore because it really is the
-		// GroceryStore's subject. It's a separate class, not just methods, because its
-		// methods have a specific function pertaining to a checkout logic only. It uses
-		// several static fields from the GroceryStore that need not be serialized
-		// because they are only useful during the execution of the check out
-		// functionality. It's set up in a similar way as a singleton: just one instance
-		// of the Transaction field it uses (checkOut) is allowed. Before another
-		// checkout can be done, the present one has to be closed or cancelled.
+
+		private Transaction checkOut;
+		private boolean checkOutOpen = false;
+		private String memberId;
 
 		/**
 		 * Opens a new checkout, but only if there isn't one open.
@@ -246,11 +241,9 @@ public class GroceryStore implements Serializable {
 		 * @param memberId - ID of the member checking out
 		 */
 		public CheckOut(String memberId) {
-			if (checkOut == null) {
-				checkOut = new Transaction();
-				checkOutMemberId = memberId;
-				checkOutOpen = true;
-			}
+			checkOut = new Transaction();
+			this.memberId = memberId;
+			checkOutOpen = true;
 		}
 
 		/**
@@ -268,7 +261,11 @@ public class GroceryStore implements Serializable {
 		 * @return checkout total
 		 */
 		public double getTotalPrice() {
-			return checkOut.getTotalPrice();
+			if (checkOutOpen) {
+				return checkOut.getTotalPrice();
+			} else {
+				return 0.0;
+			}
 		}
 
 		/**
@@ -330,8 +327,9 @@ public class GroceryStore implements Serializable {
 					Product product = productsList.searchById(item.getProductId());
 					product.setStockOnHand(product.getStockOnHand() + item.getQuantity());
 				}
-				// checkout is annulled
-				checkOutMemberId = "";
+				// checkout is set to null for safety reasons: nothing can be added to it--a new
+				// one has to be open
+				memberId = "";
 				checkOut = null;
 				result.setResultCode(Result.ACTION_SUCCESSFUL);
 			} else {
@@ -352,7 +350,7 @@ public class GroceryStore implements Serializable {
 			if (checkOutOpen) {
 				// running checkout is closed
 				checkOutOpen = false;
-				Member member = membersList.searchById(checkOutMemberId);
+				Member member = membersList.searchById(memberId);
 				// new transaction is added to the member
 				member.addTransaction(checkOut);
 				// for loop is iterating over the list of all items checked out to find out if
@@ -372,7 +370,9 @@ public class GroceryStore implements Serializable {
 						list.add(result);
 					}
 				}
-				checkOutMemberId = "";
+				// checkout is set to null for safety reasons: nothing can be added to it--a new
+				// one has to be open
+				memberId = "";
 				checkOut = null;
 			}
 			// and iterator on the created list of reordered products is returned
@@ -417,7 +417,6 @@ public class GroceryStore implements Serializable {
 		} else {
 			result.setResultCode(Result.ACTION_FAILED);
 		}
-
 		return result;
 	}
 
@@ -429,7 +428,6 @@ public class GroceryStore implements Serializable {
 	 */
 	public Result removeMember(Request request) {
 		Result result = new Result();
-
 		Member member = membersList.searchById(request.getMemberId());
 		if (member == null) {
 			result.setResultCode(Result.INVALID_MEMBER_ID);
@@ -440,17 +438,15 @@ public class GroceryStore implements Serializable {
 			result.setResultCode(Result.ACTION_SUCCESSFUL);
 			return result;
 		}
-
 		result.setResultCode(Result.ACTION_FAILED);
 		return result;
-
 	}
 
 	/**
-	 * Used by UI, gets the list of all members on record. (Converts an
-	 * Iterator<member> to Iterator<result>.)
+	 * Used by UI, gets the list of all members on record without exposing the
+	 * business logic of the back of the house.
 	 * 
-	 * @return iterator on the list of members
+	 * @return iterator on the list of results containing member fields
 	 */
 	public Iterator<Result> getAllMembers() {
 		ArrayList<Result> list = new ArrayList<Result>();
@@ -480,18 +476,13 @@ public class GroceryStore implements Serializable {
 	 * @return a result code that represents the outcome
 	 */
 	public Result addProduct(Request request) {
-
 		Result result = new Result();
-
 		String productId = productsList.add(new Product(request.getProductName(), request.getProductId(),
 				request.getProductCurrentPrice(), request.getProductStockOnHand(), request.getProductReorderLevel()));
-
 		if (!productId.equalsIgnoreCase("")) {
 			result.setResultCode(Result.ACTION_SUCCESSFUL);
 			reorderProduct(productsList.searchById(request.getProductId()));
-		}
-
-		else {
+		} else {
 			result.setResultCode(Result.ACTION_FAILED);
 		}
 		return result;
