@@ -400,7 +400,8 @@ public class GroceryStore implements Serializable {
 	 * enrollMember of the MembersList (inner class).
 	 * 
 	 * @param request carries relevant member fields
-	 * @return result (data transfer logic), filled with member ID and result code
+	 * @return result (data transfer logic), filled with member fields and result
+	 *         code
 	 */
 	public Result enrollMember(Request request) {
 		Result result = new Result();
@@ -410,12 +411,13 @@ public class GroceryStore implements Serializable {
 		memberId = membersList.add(new Member(request.getMemberName(), request.getMemberAddress(),
 				request.getMemberPhoneNumber(), request.getMemberDateJoined(), request.getMemberFeePaid()));
 		// result is filled with relevant information (member ID and result code)
-		result.setMemberId(memberId);
+		result.setMemberFields(membersList.searchById(memberId));
 		if (!memberId.equalsIgnoreCase("")) {
 			result.setResultCode(Result.ACTION_SUCCESSFUL);
 		} else {
 			result.setResultCode(Result.ACTION_FAILED);
 		}
+
 		return result;
 	}
 
