@@ -54,6 +54,8 @@ public class AutomatedTester {
 
 	public void testAll() {
 		testEnrollMember();
+
+		System.out.println("Testing was successful!");
 	}
 
 	public static void main(String[] args) {
