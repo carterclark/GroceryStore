@@ -468,6 +468,9 @@ public class UserInterface implements Serializable {
 			Result result = groceryStore.changePrice(Request.instance());
 			if (result.getResultCode() != Result.ACTION_SUCCESSFUL) {
 				System.out.println("Product's price could not be changed");
+			} else {
+				System.out.printf("Product: %s, New Price: %.2f", result.getProductName(),
+						result.getProductCurrentPrice());
 			}
 
 		} else {

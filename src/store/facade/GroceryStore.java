@@ -559,10 +559,11 @@ public class GroceryStore implements Serializable {
 
 		if (product.getCurrentPrice() == request.getProductCurrentPrice()) {
 			result.setResultCode(Result.ACTION_SUCCESSFUL);
-			System.out.printf("Product: %s, New Price: %.2f", product.getName(), product.getCurrentPrice());
+			result.setProductFields(product);
 		} else {
 			result.setResultCode(Result.ACTION_FAILED);
 		}
+
 		return result;
 	}
 
