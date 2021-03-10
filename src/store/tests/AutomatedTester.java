@@ -29,18 +29,14 @@ public class AutomatedTester {
 		makeDates();
 		for (int index = 0; index < members.length; index++) {
 			Request.instance().setMemberName(names[index]);
-
-			System.out.println(Request.instance().getMemberName());
-
 			Request.instance().setMemberAddress(addresses[index]);
 			Request.instance().setMemberPhoneNumber(phones[index]);
 			Request.instance().setMemberDateJoined(dates[index]);
 			Request.instance().setMemberFeePaid(feesPaid[index]);
 
-			Result result = GroceryStore.instance().addMember(Request.instance());
+			Result result = GroceryStore.instance().enrollMember(Request.instance());
 
 			assert result.getResultCode() == Result.ACTION_SUCCESSFUL;
-			System.out.println(result.getMemberName() + "flare----\n");
 			assert result.getMemberName().equalsIgnoreCase(names[index]);
 			assert result.getMemberPhoneNumber().equals(phones[index]);
 			assert result.getMemberDateJoined().equals(dates[index]);

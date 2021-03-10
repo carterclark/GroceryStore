@@ -69,8 +69,7 @@ public class GroceryStore implements Serializable {
 		public boolean remove(String id) {
 			for (Member member : members) {
 				if (member.getId().equalsIgnoreCase(id)) {
-					members.remove(member);
-					return true;
+					return members.remove(member);
 				}
 			}
 			return false;
@@ -145,16 +144,6 @@ public class GroceryStore implements Serializable {
 				}
 			}
 			return null;
-		}
-
-		public boolean validateProductName(String name) {
-			for (Iterator<Product> iterator = products.iterator(); iterator.hasNext();) {
-				Product product = iterator.next();
-				if (product.getName().equalsIgnoreCase(name)) {
-					return false;
-				}
-			}
-			return true;
 		}
 
 		/**
@@ -408,12 +397,13 @@ public class GroceryStore implements Serializable {
 
 	/**
 	 * Used by UI, pre-loaded with request (data transfer logic), carries out the
-	 * addMember of the MembersList (inner class).
+	 * enrollMember of the MembersList (inner class).
 	 * 
 	 * @param request carries relevant member fields
-	 * @return result (data transfer logic), filled with member ID and result code
+	 * @return result (data transfer logic), filled with member fields and result
+	 *         code
 	 */
-	public Result addMember(Request request) {
+	public Result enrollMember(Request request) {
 		Result result = new Result();
 		String memberId = "";
 		// member is added to membersList using MembersList method and request's member
@@ -421,14 +411,13 @@ public class GroceryStore implements Serializable {
 		memberId = membersList.add(new Member(request.getMemberName(), request.getMemberAddress(),
 				request.getMemberPhoneNumber(), request.getMemberDateJoined(), request.getMemberFeePaid()));
 		// result is filled with relevant information (member ID and result code)
-		result.setMemberId(memberId);
+		result.setMemberFields(membersList.searchById(memberId));
 		if (!memberId.equalsIgnoreCase("")) {
 			result.setResultCode(Result.ACTION_SUCCESSFUL);
 		} else {
 			result.setResultCode(Result.ACTION_FAILED);
 		}
 
-		result.setMemberFields(membersList.searchById(memberId));
 		return result;
 	}
 
@@ -480,25 +469,19 @@ public class GroceryStore implements Serializable {
 	 * @param memberId - ID being validated
 	 * @return TRUE if member exists, FALSE if member doesn't exits
 	 */
-	public boolean validateMemberId(String memberId) {
+	public boolean memberIdExists(String memberId) {
 		return (membersList.searchById(memberId) != null);
 	}
 
+	/**
+	 * Adds a product to the product list
+	 * 
+	 * @param request carries the relevant product fields
+	 * @return a result code that represents the outcome
+	 */
 	public Result addProduct(Request request) {
 
 		Result result = new Result();
-
-		Product product = productsList.searchById(request.getProductId());
-
-		if (product != null) {
-			result.setResultCode(Result.INVALID_PRODUCT_ID);
-			return result;
-		}
-
-		if (!productsList.validateProductName(request.getProductName())) {
-			result.setResultCode(Result.INVALID_PRODUCT_NAME);
-			return result;
-		}
 
 		String productId = productsList.add(new Product(request.getProductName(), request.getProductId(),
 				request.getProductCurrentPrice(), request.getProductStockOnHand(), request.getProductReorderLevel()));
@@ -511,9 +494,7 @@ public class GroceryStore implements Serializable {
 		else {
 			result.setResultCode(Result.ACTION_FAILED);
 		}
-
 		return result;
-
 	}
 
 	/**
@@ -522,8 +503,18 @@ public class GroceryStore implements Serializable {
 	 * @param productId - ID being validated
 	 * @return TRUE if product is on record, FALSE if product isn't on record
 	 */
-	public boolean validateProductId(String productId) {
+	public boolean productIdExists(String productId) {
 		return (productsList.searchById(productId) != null);
+	}
+
+	public boolean productNameExists(String name) {
+		for (Iterator<Product> iterator = productsList.iterator(); iterator.hasNext();) {
+			Product product = iterator.next();
+			if (product.getName().equalsIgnoreCase(name)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

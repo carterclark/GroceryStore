@@ -81,7 +81,7 @@ public class UserInterface implements Serializable {
 		boolean error = true;
 		while (error) {
 			error = false;
-			System.out.print(prompt + " ");
+			System.out.print(prompt);
 			read = input.nextLine().trim();
 			if (read.equals("")) {
 				error = true;
@@ -303,7 +303,7 @@ public class UserInterface implements Serializable {
 		Request.instance().setMemberPhoneNumber(phoneNumber);
 		Request.instance().setMemberFeePaid(feePaid);
 		Request.instance().setMemberDateJoined(getToday());
-		Result result = groceryStore.addMember(Request.instance());
+		Result result = groceryStore.enrollMember(Request.instance());
 		if (result.getResultCode() == Result.ACTION_SUCCESSFUL) {
 			System.out.println("\nMember added. Member ID = " + result.getMemberId() + ".");
 		} else {
@@ -344,7 +344,16 @@ public class UserInterface implements Serializable {
 
 		do {
 			String name = getString("Enter product's name: ");
+			if (groceryStore.productNameExists(name)) {
+				System.out.println("Error: product name already exists, a different one must be entered");
+				return;
+			}
+
 			String id = getString("Enter product's id: ");
+			if (groceryStore.productIdExists(id)) {
+				System.out.println("Error: product id already exists, a different one must be entered");
+				return;
+			}
 
 			double currentPrice = getDouble("Enter product's current price: ", "A valid number was not entered.");
 			int stockOnHand = getInteger("Enter product's stock on hand: ", "A valid integer was not entered.");
@@ -372,7 +381,7 @@ public class UserInterface implements Serializable {
 	public void checkOut() {
 		String memberId = getString("Enter member's ID (M-<number>):");
 		// next if clause is carried out if the member exists
-		if (groceryStore.validateMemberId(memberId)) {
+		if (groceryStore.memberIdExists(memberId)) {
 			// opening a checkout
 			CheckOut checkOut = groceryStore.new CheckOut(memberId);
 			// do the loop until there are no more items to check out
