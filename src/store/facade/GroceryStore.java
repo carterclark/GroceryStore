@@ -400,7 +400,8 @@ public class GroceryStore implements Serializable {
 	 * enrollMember of the MembersList (inner class).
 	 * 
 	 * @param request carries relevant member fields
-	 * @return result (data transfer logic), filled with member ID and result code
+	 * @return result (data transfer logic), filled with member fields and result
+	 *         code
 	 */
 	public Result enrollMember(Request request) {
 		Result result = new Result();
@@ -410,12 +411,13 @@ public class GroceryStore implements Serializable {
 		memberId = membersList.add(new Member(request.getMemberName(), request.getMemberAddress(),
 				request.getMemberPhoneNumber(), request.getMemberDateJoined(), request.getMemberFeePaid()));
 		// result is filled with relevant information (member ID and result code)
-		result.setMemberId(memberId);
+		result.setMemberFields(membersList.searchById(memberId));
 		if (!memberId.equalsIgnoreCase("")) {
 			result.setResultCode(Result.ACTION_SUCCESSFUL);
 		} else {
 			result.setResultCode(Result.ACTION_FAILED);
 		}
+
 		return result;
 	}
 
@@ -540,26 +542,6 @@ public class GroceryStore implements Serializable {
 			result.setResultCode(Result.ACTION_SUCCESSFUL);
 			// this product is marked as ordered (pending order)
 			product.setOrdered(true);
-		}
-		return result;
-	}
-
-	/**
-	 * Changes the price of a product
-	 * 
-	 * @param request carries the relevant product fields
-	 * @return a result code that represents the outcome
-	 */
-	public Result changePrice(Request request) {
-		Result result = new Result();
-		Product product = productsList.searchById(request.getProductId());
-		product.setCurrentPrice(request.getProductCurrentPrice());
-
-		if (product.getCurrentPrice() == request.getProductCurrentPrice()) {
-			result.setResultCode(Result.ACTION_SUCCESSFUL);
-			System.out.printf("Product: %s, New Price: %.2f", product.getName(), product.getCurrentPrice());
-		} else {
-			result.setResultCode(Result.ACTION_FAILED);
 		}
 		return result;
 	}
