@@ -453,6 +453,24 @@ public class UserInterface implements Serializable {
 	}
 
 	public void changePrice() {
+
+		String id = getString("Enter product's id: ");
+		if (groceryStore.productIdExists(id)) {
+			Request.instance().setProductId(id);
+
+			double currentPrice = getDouble("Enter product's new current price: ", "A valid number was not entered.");
+			Request.instance().setProductCurrentPrice(currentPrice);
+
+			Result result = groceryStore.changePrice(Request.instance());
+			if (result.getResultCode() != Result.ACTION_SUCCESSFUL) {
+				System.out.println("Product's price could not be changed");
+			}
+
+		} else {
+			System.out.println("Error: product id does not exist");
+			return;
+		}
+
 	}
 
 	public void getProductInfo() {

@@ -544,4 +544,24 @@ public class GroceryStore implements Serializable {
 		return result;
 	}
 
+	/**
+	 * Changes the price of a product
+	 * 
+	 * @param request carries the relevant product fields
+	 * @return a result code that represents the outcome
+	 */
+	public Result changePrice(Request request) {
+		Result result = new Result();
+		Product product = productsList.searchById(request.getProductId());
+		product.setCurrentPrice(request.getProductCurrentPrice());
+
+		if (product.getCurrentPrice() == request.getProductCurrentPrice()) {
+			result.setResultCode(Result.ACTION_SUCCESSFUL);
+			System.out.printf("Product: %s, New Price: %.2f", product.getName(), product.getCurrentPrice());
+		} else {
+			result.setResultCode(Result.ACTION_FAILED);
+		}
+		return result;
+	}
+
 }
