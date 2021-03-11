@@ -59,7 +59,6 @@ public class AutomatedTester {
 	}
 
 	public static void main(String[] args) {
-		GroceryStore.instance();
 		new AutomatedTester().testAll();
 	}
 
