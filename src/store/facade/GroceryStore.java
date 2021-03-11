@@ -203,7 +203,7 @@ public class GroceryStore implements Serializable {
 			ArrayList<Order> output = new ArrayList<Order>();
 			for (Iterator<Order> iterator = orders.iterator(); iterator.hasNext();) {
 				Order order = iterator.next();
-				if (!order.isFulfilled()) {
+				if (order.isOutstanding()) {
 					output.add(order);
 				}
 			}
@@ -558,4 +558,56 @@ public class GroceryStore implements Serializable {
 		return result;
 	}
 
+	/**
+	 * Validates order number/ID.
+	 * 
+	 * @param orderId - number/ID being validated
+	 * @return TRUE if order is on record, FALSE if order isn't on record
+	 */
+	public boolean orderIdExists(String orderId) {
+		return (ordersList.searchById(orderId) != null);
+	}
+
+	public boolean orderIsOutstanding(String orderId) {
+		if (ordersList.searchById(orderId) == null) {
+			return false;
+		} else {
+			return (ordersList.searchById(orderId).isOutstanding());
+		}
+	}
+
+	/**
+	 * Processes an outstanding order from the ordersList.
+	 * 
+	 * @param request - Request object (part of DataTransfer logic) carrying the
+	 *                order number/ID info
+	 * @return Result object (part of DataTransfer logic) carrying info about the
+	 *         product re-stocked, the order number, and result code
+	 */
+	public Result processOrder(Request request) {
+		Order order = ordersList.searchById(request.getOrderId());
+		Result result = new Result();
+		// following if clause carried out if the order does not exist OR has already
+		// been processed
+		if (order == null || !order.isOutstanding()) {
+			result.setResultCode(Result.ACTION_FAILED);
+			return result;
+		} else {
+			// product matched to order's product ID
+			Product product = productsList.searchById(order.getProductId());
+			// product on-hand quantity increased by the order quantity
+			product.setStockOnHand(product.getStockOnHand() + order.getQuantity());
+			// product set as no longer pending order
+			product.setOrdered(false);
+			// result's product fields set
+			result.setProductFields(product);
+			// order number repeated back to result
+			result.setOrderId(request.getOrderId());
+			// result code set
+			result.setResultCode(Result.ACTION_SUCCESSFUL);
+			// order set as fulfilled
+			order.setOutstanding(false);
+			return result;
+		}
+	}
 }

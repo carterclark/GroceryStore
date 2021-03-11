@@ -19,10 +19,9 @@ public class Order implements Serializable {
 	private String productId;
 	private Calendar dateOfOrder;
 	private int quantity;
-	// the order is outstanding until delivery when isFulfilled is set manually to
-	// TRUE by user
-	private boolean isFulfilled;
-
+	// the order is outstanding until delivery when isOutstanding is set to FALSE by
+	// user
+	private boolean isOutstanding;
 	// static field necessary for generating order numbers automatically
 	private static int orderCounter = 1;
 
@@ -41,7 +40,7 @@ public class Order implements Serializable {
 		this.productId = productId;
 		this.quantity = quantity;
 		orderNumber = "O-" + orderCounter++;
-		isFulfilled = false;
+		isOutstanding = true;
 	}
 
 	// for testing purposes (we may or may not need it)
@@ -53,15 +52,15 @@ public class Order implements Serializable {
 		this.productId = productId;
 		this.quantity = quantity;
 		orderNumber = "O-" + orderCounter++;
-		isFulfilled = false;
+		isOutstanding = true;
 	}
 
-	public boolean isFulfilled() {
-		return isFulfilled;
+	public boolean isOutstanding() {
+		return isOutstanding;
 	}
 
-	public void setFulfilled(boolean isFulfilled) {
-		this.isFulfilled = isFulfilled;
+	public void setOutstanding(boolean isOutstanding) {
+		this.isOutstanding = isOutstanding;
 	}
 
 	public String getOrderNumber() {

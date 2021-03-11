@@ -9,7 +9,7 @@ import store.facade.Result;
 
 public class AutomatedTester {
 
-	private GroceryStore groceryStore;
+	private static GroceryStore groceryStore;
 	private String[] names = { "n1", "n2", "n3" };
 	private String[] addresses = { "a1", "a2", "a3" };
 	private String[] phones = { "p1", "p2", "p3" };
@@ -59,6 +59,7 @@ public class AutomatedTester {
 	}
 
 	public static void main(String[] args) {
+		GroceryStore.instance();
 		new AutomatedTester().testAll();
 	}
 

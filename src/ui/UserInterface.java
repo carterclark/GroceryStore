@@ -374,7 +374,12 @@ public class UserInterface implements Serializable {
 			do {
 				System.out.println();
 				// loading request (data transfer logic) with relevant information
-				Request.instance().setProductId(getString("Enter item's product ID: "));
+				String productId = getString("Enter item's product ID: ");
+				if (!groceryStore.productIdExists(productId)) {
+					System.out.println("Invalid product ID. Unable to check out item.");
+					break;
+				}
+				Request.instance().setProductId(productId);
 				Request.instance().setOrderQuantity(getInteger("Enter item quantity: ", "Not a valid number."));
 				// carrying out the addItem of CheckOut class (inner class of GroceryStore) and
 				// returning the corresponding info (result code, result's product fields, and
@@ -390,14 +395,11 @@ public class UserInterface implements Serializable {
 				case Result.ACTION_FAILED:
 					System.out.println("Unable to check out item.");
 					break;
-				case Result.INVALID_PRODUCT_ID:
-					System.out.println("Invalid product ID. Unable to check out item.");
-					break;
 				case Result.INVALID_ORDER_QUANTITY:
 					System.out.println("Invalid item quantity. Unable to check out item.");
 					break;
 				}
-			} while (getYesOrNo("More items to check out?"));
+			} while (getYesOrNo("Another item to check out?"));
 			// displaying total
 			System.out.println("\nYOUR TOTAL IS: " + String.format("$%.2f", checkOut.getTotalPrice()) + "\n");
 			// the clerk confirms and collects physical cash OR doesn't confirm and thereby
@@ -415,7 +417,7 @@ public class UserInterface implements Serializable {
 					// for loop prints the reordered products
 					for (Iterator<Result> counter = iterator; counter.hasNext();) {
 						Result result = counter.next();
-						System.out.println("Item " + result.getProductName() + " will be reordered. (Order quantity: "
+						System.out.println("Item '" + result.getProductName() + "' will be reordered. (Order quantity: "
 								+ result.getOrderQuantity() + ", order number: " + result.getOrderId() + ".)");
 					}
 				}
@@ -435,19 +437,44 @@ public class UserInterface implements Serializable {
 		}
 	}
 
+	/**
+	 * Processes a new shipment to the grocery store fulfilled by a vendor.
+	 */
 	public void processShipment() {
+		do {
+			String orderNumber = getString("Enter outstanding order number: ");
+			if (!groceryStore.orderIdExists(orderNumber)) {
+				System.out.println("The order number is not on file.");
+				return;
+			}
+			if (!groceryStore.orderIsOutstanding(orderNumber)) {
+				System.out.println("The order " + orderNumber + " has already been processed.");
+				return;
+			}
+			// following portion is carried out only if the order number exists and order is
+			// outstanding
+			// order number is loaded into the request instance
+			Request.instance().setOrderId(orderNumber);
+			// order is processed by GroceryStore's processOrder() method
+			Result result = groceryStore.processOrder(Request.instance());
+			if (result.getResultCode() == Result.ACTION_SUCCESSFUL) {
+				System.out.println("Order " + orderNumber + "successfully processed:");
+				System.out.println("Product " + result.getProductId() + ", '" + result.getProductName()
+						+ "', has a new stock quantity of " + result.getProductStockOnHand() + " unit(s).");
+			} else {
+				System.out.println("The processing of order " + orderNumber + " has failed.");
+			}
+		} while (getYesOrNo("Another order to process?"));
 	}
 
 	/**
 	 * Changes the price of a Product given an id and prints out product name and
-	 * new price
+	 * new price.
 	 */
 	public void changePrice() {
-
 		String id = getString("Enter product's id: ");
 		if (groceryStore.productIdExists(id)) {
 			Request.instance().setProductId(id);
-
 			double currentPrice = getDouble("Enter product's new current price: ", "A valid number was not entered.");
 			Request.instance().setProductCurrentPrice(currentPrice);
 
@@ -458,7 +485,6 @@ public class UserInterface implements Serializable {
 				System.out.printf("Product: %s, New Price: %.2f", result.getProductName(),
 						result.getProductCurrentPrice());
 			}
-
 		} else {
 			System.out.println("Error: product id does not exist");
 			return;
