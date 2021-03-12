@@ -331,34 +331,30 @@ public class UserInterface implements Serializable {
 	 * id already present
 	 */
 	public void addProduct() {
-
-		do {
-			String name = getString("Enter product's name: ");
-			if (groceryStore.productNameExists(name)) {
-				System.out.println("Error: product name already exists, a different one must be entered.");
-				return;
-			}
-			String id = getString("Enter product's id: ");
-			if (groceryStore.productIdExists(id)) {
-				System.out.println("Error: product id already exists, a different one must be entered.");
-				return;
-			}
-			double currentPrice = getDouble("Enter product's current price: ", "A valid number was not entered.");
-			int stockOnHand = getInteger("Enter product's stock on hand: ", "A valid integer was not entered.");
-			int reorderedLevel = getInteger("Enter product's reorder level: ", "A valid integer was not entered.");
-			Request.instance().setProductName(name);
-			Request.instance().setProductId(id);
-			Request.instance().setProductCurrentPrice(currentPrice);
-			Request.instance().setProductStockOnHand(stockOnHand);
-			Request.instance().setProductReorderLevel(reorderedLevel);
-			Result result = groceryStore.addProduct(Request.instance());
-			if (result.getResultCode() != Result.ACTION_SUCCESSFUL) {
-				System.out.println("Product could not be added");
-			} else {
-				System.out.println("Product " + result.getProductName() + " added.");
-			}
-		} while (getYesOrNo("Add another product?"));
-
+		String name = getString("Enter product's name: ");
+		if (groceryStore.productNameExists(name)) {
+			System.out.println("Error: product name already exists, a different one must be entered.");
+			return;
+		}
+		String id = getString("Enter product's id: ");
+		if (groceryStore.productIdExists(id)) {
+			System.out.println("Error: product id already exists, a different one must be entered.");
+			return;
+		}
+		double currentPrice = getDouble("Enter product's current price: ", "A valid number was not entered.");
+		int stockOnHand = getInteger("Enter product's stock on hand: ", "A valid integer was not entered.");
+		int reorderedLevel = getInteger("Enter product's reorder level: ", "A valid integer was not entered.");
+		Request.instance().setProductName(name);
+		Request.instance().setProductId(id);
+		Request.instance().setProductCurrentPrice(currentPrice);
+		Request.instance().setProductStockOnHand(stockOnHand);
+		Request.instance().setProductReorderLevel(reorderedLevel);
+		Result result = groceryStore.addProduct(Request.instance());
+		if (result.getResultCode() == Result.ACTION_SUCCESSFUL) {
+			System.out.println("Product " + result.getProductName() + " added.");
+		} else {
+			System.out.println("Product could not be added");
+		}
 	}
 
 	/**
@@ -649,9 +645,11 @@ public class UserInterface implements Serializable {
 	 * @param args N/A
 	 */
 	public static void main(String[] args) {
-		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
+		System.out.println(
+				"★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 		System.out.println("★★★ WELCOME TO OUR GROCERY STORE ★★★");
-		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
+		System.out.println(
+				"★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
 		if (getYesOrNo("Would you like to load Store data from the disk?")) {
 			load();
 		} else {
