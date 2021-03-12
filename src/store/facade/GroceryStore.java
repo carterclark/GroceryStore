@@ -643,8 +643,8 @@ public class GroceryStore implements Serializable {
 	/**
 	 * Changes the price of a product
 	 * 
-	 * @param request carries the relevant product fields
-	 * @return a result code that represents the outcome
+	 * @param s is the name string
+	 * @return a result code ArrayList that represents the outcome
 	 */
 	public ArrayList<Result> getProductInfo(String s) {
 		ArrayList<Result> result = new ArrayList<Result>();
