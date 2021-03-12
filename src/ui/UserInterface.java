@@ -1,6 +1,7 @@
 package ui;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -492,7 +493,25 @@ public class UserInterface implements Serializable {
 
 	}
 
+	/**
+	 * Lists all products that start with a given name and displays their name, id,
+	 * price, stock in hand, and reorder level.
+	 */
 	public void getProductInfo() {
+		String name = getString("Enter product's name: ");
+		ArrayList<Result> result = groceryStore.getProductInfo(name);
+
+		if (result.get(0).getResultCode() != Result.ACTION_SUCCESSFUL) {
+			System.out.println("Error: product does not exist");
+		} else {
+			for (int i = 0; i < result.size(); i++) {
+				System.out.printf("Product: %s, ID: %s, Price: %.2f, Stock in hand: %d, reorder level: %d\n\n",
+						result.get(i).getProductName(), result.get(i).getProductId(),
+						result.get(i).getProductCurrentPrice(), result.get(i).getProductStockOnHand(),
+						result.get(i).getProductReorderLevel());
+			}
+		}
+
 	}
 
 	public void getMemberInfo() {
@@ -621,9 +640,11 @@ public class UserInterface implements Serializable {
 	 * @param args N/A
 	 */
 	public static void main(String[] args) {
-		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
+		System.out.println(
+				"★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 		System.out.println("★★★ WELCOME TO OUR GROCERY STORE ★★★");
-		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
+		System.out.println(
+				"★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
 		if (getYesOrNo("Would you like to load Store data from the disk?")) {
 			load();
 		} else {
