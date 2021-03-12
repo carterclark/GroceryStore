@@ -1,7 +1,6 @@
 package ui;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -495,16 +494,22 @@ public class UserInterface implements Serializable {
 	 */
 	public void getProductInfo() {
 		String name = getString("Enter product's name: ");
-		ArrayList<Result> result = groceryStore.getProductInfo(name);
+		Iterator<Result> iter = groceryStore.getProductInfo(name);
+		Result result;
 
-		if (result.get(0).getResultCode() != Result.ACTION_SUCCESSFUL) {
+		if (!iter.hasNext()) {
 			System.out.println("Error: product does not exist");
 		} else {
-			for (int i = 0; i < result.size(); i++) {
-				System.out.printf("Product: %s, ID: %s, Price: %.2f, Stock in hand: %d, reorder level: %d\n\n",
-						result.get(i).getProductName(), result.get(i).getProductId(),
-						result.get(i).getProductCurrentPrice(), result.get(i).getProductStockOnHand(),
-						result.get(i).getProductReorderLevel());
+			result = iter.next();
+			if (result.getResultCode() != Result.ACTION_SUCCESSFUL) {
+				System.out.println("Error: product does not exist");
+			} else {
+				while (iter.hasNext()) {
+					System.out.printf("Product: %s, ID: %s, Price: %.2f, Stock in hand: %d, reorder level: %d\n\n",
+							result.getProductName(), result.getProductId(), result.getProductCurrentPrice(),
+							result.getProductStockOnHand(), result.getProductReorderLevel());
+					result = iter.next();
+				}
 			}
 		}
 

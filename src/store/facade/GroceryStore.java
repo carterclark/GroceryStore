@@ -641,12 +641,12 @@ public class GroceryStore implements Serializable {
 	}
 
 	/**
-	 * Changes the price of a product
+	 * Gets product information of products that start with string s
 	 * 
 	 * @param s is the name string
 	 * @return a result code ArrayList that represents the outcome
 	 */
-	public ArrayList<Result> getProductInfo(String s) {
+	public Iterator<Result> getProductInfo(String s) {
 		ArrayList<Result> result = new ArrayList<Result>();
 		String name = s.toUpperCase();
 
@@ -668,7 +668,7 @@ public class GroceryStore implements Serializable {
 			result.get(0).setResultCode(Result.ACTION_FAILED);
 		}
 
-		return result;
+		return result.iterator();
 	}
 
 }
