@@ -529,8 +529,8 @@ public class UserInterface implements Serializable {
 		// next if clause is carried out if the database of members is non-empty
 		if (iterator.hasNext()) {
 			// displays the header of the table
-			System.out.println(String.format("%-9s", "Member ID") + ", " + String.format("%-23s", "Name") + ", "
-					+ String.format("%-28s", "Address") + ", " + String.format("%-11s", "Ph. number") + ", "
+			System.out.println(String.format("%-9s", "Member ID") + "  " + String.format("%-23s", "Name") + "  "
+					+ String.format("%-28s", "Address") + "  " + String.format("%-11s", "Ph. number") + "  "
 					+ String.format("%-10s", "Joined"));
 			System.out.println("-".repeat(89));
 			// for loop prints all members
@@ -549,9 +549,9 @@ public class UserInterface implements Serializable {
 				} else {
 					fittedAddress = result.getMemberAddress();
 				}
-				System.out.println(String.format("%-9s", result.getMemberId()) + ", "
-						+ String.format("%-23s", fittedName) + ", " + String.format("%-28s", fittedAddress) + ", "
-						+ String.format("%-11s", result.getMemberPhoneNumber()) + ", "
+				System.out.println(String.format("%-9s", result.getMemberId()) + "  "
+						+ String.format("%-23s", fittedName) + "  " + String.format("%-28s", fittedAddress) + "  "
+						+ String.format("%-11s", result.getMemberPhoneNumber()) + "  "
 						+ String.format("%1$tm/%1$td/%1$tY", result.getMemberDateJoined()));
 			}
 		} else {
@@ -564,6 +564,34 @@ public class UserInterface implements Serializable {
 	 * Lists all products in the database.
 	 */
 	public void listProducts() {
+		Iterator<Result> iterator = groceryStore.getAllProducts();
+		if (iterator.hasNext()) {
+			// displays the header of the table
+			System.out.println(String.format("%-10s", "Product ID") + "  " + String.format("%-25s", "Product Name")
+					+ "  " + String.format("%-13s", "Current Price") + "  " + String.format("%-13s", "Stock On Hand")
+					+ "  " + String.format("%-13s", "Reorder Level"));
+			System.out.println("-".repeat(82));
+			// for loop prints all products
+			for (Iterator<Result> counter = iterator; counter.hasNext();) {
+				Result result = counter.next();
+				// field fittedName stores trimmed off version of product name to fit in the
+				// table in case it's too long
+				String fittedName;
+				if (result.getProductName().length() > 25) {
+					fittedName = result.getProductName().substring(0, 25);
+				} else {
+					fittedName = result.getProductName();
+				}
+				System.out.println(
+						String.format("%-10s", result.getProductId()) + "  " + String.format("%-25s", fittedName) + "  "
+								+ String.format("%13.2f", result.getProductCurrentPrice()) + "  "
+								+ String.format("%13s", result.getProductStockOnHand()) + "  "
+								+ String.format("%13s", result.getProductReorderLevel()));
+			}
+		} else {
+			// in case the product database is empty
+			System.out.println("No products in the database.");
+		}
 	}
 
 	/**
