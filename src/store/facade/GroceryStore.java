@@ -470,7 +470,7 @@ public class GroceryStore implements Serializable {
 	}
 
 	/**
-	 * Adds a product to the product list
+	 * Adds a product to the product list.
 	 * 
 	 * @param request carries the relevant product fields
 	 * @return a result code that represents the outcome
@@ -489,6 +489,23 @@ public class GroceryStore implements Serializable {
 	}
 
 	/**
+	 * Used by UI, gets the list of all products on record without exposing the
+	 * business logic of the back of the house.
+	 * 
+	 * @return iterator on the list of results containing product fields
+	 */
+	public Iterator<Result> getAllProducts() {
+		ArrayList<Result> list = new ArrayList<Result>();
+		for (Iterator<Product> iterator = productsList.iterator(); iterator.hasNext();) {
+			Product product = iterator.next();
+			Result result = new Result();
+			result.setProductFields(product);
+			list.add(result);
+		}
+		return list.iterator();
+	}
+
+	/**
 	 * Validates product ID.
 	 * 
 	 * @param productId - ID being validated
@@ -498,6 +515,13 @@ public class GroceryStore implements Serializable {
 		return (productsList.searchById(productId) != null);
 	}
 
+	/**
+	 * Validates product name.
+	 * 
+	 * @param name - name being validated
+	 * @return TRUE if the product name exists, FALSE if the product name does not
+	 *         exist
+	 */
 	public boolean productNameExists(String name) {
 		for (Iterator<Product> iterator = productsList.iterator(); iterator.hasNext();) {
 			Product product = iterator.next();
@@ -568,6 +592,11 @@ public class GroceryStore implements Serializable {
 		return (ordersList.searchById(orderId) != null);
 	}
 
+	/**
+	 * Validates an order as outstanding (not yet fulfilled).
+	 * 
+	 * @return TRUE if order is not yet fulfilled (is outstanding), FALSE if not
+	 */
 	public boolean orderIsOutstanding(String orderId) {
 		if (ordersList.searchById(orderId) == null) {
 			return false;
