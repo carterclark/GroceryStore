@@ -18,13 +18,6 @@ public class AutomatedTester {
 	private double[] feesPaid = { 12, 13.67, 14.90 };
 	private Member[] members = new Member[3];
 
-	private void makeDates() {
-		for (int i = 0; i < 3; i++) {
-			calendar.add(Calendar.DATE, (-15 * i));
-			dates[i] = calendar;
-		}
-	}
-
 	public void testEnrollMember() {
 		makeDates();
 		for (int index = 0; index < members.length; index++) {
@@ -60,6 +53,20 @@ public class AutomatedTester {
 
 	public static void main(String[] args) {
 		new AutomatedTester().testAll();
+
+	}
+
+	private void makeDates() {
+		for (int i = 0; i < 3; i++) {
+			calendar.add(Calendar.DATE, (-15 * i));
+			dates[i] = calendar;
+		}
+	}
+
+	private void makeAttributes() {
+
+		String string = "{";
+
 	}
 
 }
