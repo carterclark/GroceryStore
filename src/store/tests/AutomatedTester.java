@@ -27,7 +27,7 @@ public class AutomatedTester {
 	private String[] productIds = { "P-1", "P-2", "P-3", "P-4", "P-5", "P-6", "P-7", "P-8", "P-9", "P-10", "P-11",
 			"P-12", "P-13", "P-14", "P-15", "P-16", "P-17", "P-18", "P-19", "P-20" };
 	private int[] stockOnHand = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
-	private int[] reorderLevel = { 0, 1, 2, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 };
+	private int[] reorderLevel = { 1, 2, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 };
 	private double[] currentPrice = { 1.99, 3.79, 1.99, 3.79, 3.79, 4.5, 3.75, 2.29, 4.99, 3.99, 0.89, 1.49, 1.89, 0.6,
 			1.89, 0.6, 1.89, 0.6, 3.97, 3.97 };
 	private int productCount = 20;
