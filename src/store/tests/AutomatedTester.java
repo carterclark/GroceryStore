@@ -26,8 +26,7 @@ public class AutomatedTester {
 			"Ice Cream Vanilla 1qt", "Ice Cream Chocolate 1qt" };
 	private String[] productIds = { "P-1", "P-2", "P-3", "P-4", "P-5", "P-6", "P-7", "P-8", "P-9", "P-10", "P-11",
 			"P-12", "P-13", "P-14", "P-15", "P-16", "P-17", "P-18", "P-19", "P-20" };
-	private int[] stockOnHand = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
-	private int[] reorderLevel = { 1, 2, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 };
+	private int[] reorderLevel = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
 	private double[] currentPrice = { 1.99, 3.79, 1.99, 3.79, 3.79, 4.5, 3.75, 2.29, 4.99, 3.99, 0.89, 1.49, 1.89, 0.6,
 			1.89, 0.6, 1.89, 0.6, 3.97, 3.97 };
 	private int productCount = 20;
@@ -66,7 +65,7 @@ public class AutomatedTester {
 		for (int index = 0; index < productCount; index++) {
 			Request.instance().setProductId(productIds[index]);
 			Request.instance().setProductName(productNames[index]);
-			Request.instance().setProductStockOnHand(stockOnHand[index]);
+			Request.instance().setProductStockOnHand(0);
 			Request.instance().setProductReorderLevel(reorderLevel[index]);
 			Request.instance().setProductCurrentPrice(currentPrice[index]);
 
@@ -75,7 +74,7 @@ public class AutomatedTester {
 			assert result.getResultCode() == Result.ACTION_SUCCESSFUL;
 			assert result.getProductId().equalsIgnoreCase(productIds[index]);
 			assert result.getProductName().equalsIgnoreCase(productNames[index]);
-			assert result.getProductStockOnHand() == stockOnHand[index];
+			assert result.getProductStockOnHand() == 0;
 			assert result.getProductReorderLevel() == reorderLevel[index];
 			assert result.getProductCurrentPrice() == currentPrice[index];
 		}
@@ -84,6 +83,10 @@ public class AutomatedTester {
 	public void testAll() {
 		testEnrollMember();
 		testAddProduct();
+		for (int index = 1; index <= 20; index++) {
+			Request.instance().setOrderId("O-" + index);
+			GroceryStore.instance().processOrder(Request.instance());
+		}
 		UserInterface.instance().listMembers();
 		UserInterface.instance().listProducts();
 		System.out.println("Testing was successful!");
