@@ -455,7 +455,7 @@ public class UserInterface implements Serializable {
 			// order number is loaded into the request instance
 			Request.instance().setOrderId(orderNumber);
 			// order is processed by GroceryStore's processOrder() method
-			Result result = groceryStore.processOrder(Request.instance());
+			Result result = groceryStore.processShipment(Request.instance());
 			if (result.getResultCode() == Result.ACTION_SUCCESSFUL) {
 				System.out.println("Order " + orderNumber + "successfully processed:");
 				System.out.println("Product " + result.getProductId() + ", '" + result.getProductName()
