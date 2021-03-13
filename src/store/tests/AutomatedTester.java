@@ -8,7 +8,7 @@ import store.facade.Result;
 
 public class AutomatedTester {
 
-	private static GroceryStore groceryStore;
+	private static GroceryStore groceryStore = GroceryStore.instance();
 
 	private int memberCount = 7;
 	private int removeMemberCount = 2;
@@ -34,6 +34,7 @@ public class AutomatedTester {
 			1.89, 0.6, 1.89, 0.6, 3.97, 3.97 };
 
 	public void testEnrollMember() {
+
 		makeDates();
 		for (int index = 0; index < memberCount; index++) {
 
@@ -55,21 +56,21 @@ public class AutomatedTester {
 
 	public void testRemoveMember() {
 
-		for (int index = 0; index < removeMemberCount; index++) {
+		for (int index = memberCount; index < (memberCount - removeMemberCount); index--) {
 
-			Request.instance().setMemberName(names[index]);
-			Request.instance().setMemberAddress(addresses[index]);
-			Request.instance().setMemberPhoneNumber(phones[index]);
-			Request.instance().setMemberDateJoined(dates[index]);
-			Request.instance().setMemberFeePaid(feesPaid[index]);
+			Request.instance().setMemberId("M-" + index);
 
 			Result result = groceryStore.removeMember(Request.instance());
 
 			assert result.getResultCode() == Result.ACTION_SUCCESSFUL;
-			assert !result.getMemberName().equalsIgnoreCase(names[index]);
-			assert !result.getMemberPhoneNumber().equals(phones[index]);
-			assert !result.getMemberDateJoined().equals(dates[index]);
-			assert result.getMemberFeePaid() != feesPaid[index];
+			assert result.getMemberName().equalsIgnoreCase(names[index]);
+			assert result.getMemberPhoneNumber().equals(phones[index]);
+			assert result.getMemberDateJoined().equals(dates[index]);
+			assert result.getMemberFeePaid() == feesPaid[index];
+
+			result = groceryStore.removeMember(Request.instance());
+
+			assert result.getResultCode() == Result.ACTION_FAILED;
 		}
 	}
 
@@ -102,12 +103,15 @@ public class AutomatedTester {
 
 		testAddProduct();
 
-		System.out.println("Automated testing was successful!");
+//		UserInterface.instance().listMembers();
+//		UserInterface.instance().listProducts();
 	}
 
 	public static void main(String[] args) {
 
 		new AutomatedTester().testAll();
+
+		System.out.println("Automated testing was successful!");
 
 	}
 
