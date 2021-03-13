@@ -56,9 +56,9 @@ public class AutomatedTester {
 
 	public void testRemoveMember() {
 
-		for (int index = memberCount; index < (memberCount - removeMemberCount); index--) {
+		for (int index = 0; index <= removeMemberCount; index++) {
 
-			Request.instance().setMemberId("M-" + index);
+			Request.instance().setMemberId("M-" + (index + 1));
 
 			Result result = groceryStore.removeMember(Request.instance());
 
@@ -70,7 +70,7 @@ public class AutomatedTester {
 
 			result = groceryStore.removeMember(Request.instance());
 
-			assert result.getResultCode() == Result.ACTION_FAILED;
+			assert result.getResultCode() == Result.INVALID_MEMBER_ID;
 		}
 	}
 
