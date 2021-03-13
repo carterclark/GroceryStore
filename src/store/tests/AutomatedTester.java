@@ -17,7 +17,7 @@ public class AutomatedTester {
 			"1600 Pennsylvania Ave. NW", "a1", "a2" };
 	private String[] phones = { "3125559876", "3105551245", "6515552045", "02055590000", "2025551000", "p1", "p2" };
 	private Calendar calendar = Calendar.getInstance();
-	private Calendar[] dates = new Calendar[7];
+	private Calendar[] dates = new Calendar[memberCount];
 	private double[] feesPaid = { 12, 13.67, 14.90, 17, 20, 4.60, 5.50 };
 
 	private int productCount = 20;
