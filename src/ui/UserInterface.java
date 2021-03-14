@@ -10,6 +10,7 @@ import store.facade.GroceryStore;
 import store.facade.GroceryStore.CheckOut;
 import store.facade.Request;
 import store.facade.Result;
+import store.tests.AutomatedTester;
 
 /**
  * Class UserInterface represents the front end of the house, interacting
@@ -279,6 +280,7 @@ public class UserInterface implements Serializable {
 	 * Runs a test bed with predetermined sets of data applied on the grocery store.
 	 */
 	public void testBed() {
+		new AutomatedTester().testAll();
 	}
 
 	/**
@@ -373,7 +375,8 @@ public class UserInterface implements Serializable {
 				String productId = getString("Enter item's product ID: ");
 				if (!groceryStore.productIdExists(productId)) {
 					System.out.println("Invalid product ID. Unable to check out item.");
-					break;
+					// skip to another item
+					continue;
 				}
 				Request.instance().setProductId(productId);
 				Request.instance().setOrderQuantity(getInteger("Enter item quantity: ", "Not a valid number."));
@@ -452,7 +455,7 @@ public class UserInterface implements Serializable {
 			// order number is loaded into the request instance
 			Request.instance().setOrderId(orderNumber);
 			// order is processed by GroceryStore's processOrder() method
-			Result result = groceryStore.processOrder(Request.instance());
+			Result result = groceryStore.processShipment(Request.instance());
 			if (result.getResultCode() == Result.ACTION_SUCCESSFUL) {
 				System.out.println("Order " + orderNumber + "successfully processed:");
 				System.out.println("Product " + result.getProductId() + ", '" + result.getProductName()
@@ -669,11 +672,9 @@ public class UserInterface implements Serializable {
 	 * @param args N/A
 	 */
 	public static void main(String[] args) {
-		System.out.println(
-				"★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
+		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 		System.out.println("★★★ WELCOME TO OUR GROCERY STORE ★★★");
-		System.out.println(
-				"★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
+		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
 		if (getYesOrNo("Would you like to load Store data from the disk?")) {
 			load();
 		} else {
