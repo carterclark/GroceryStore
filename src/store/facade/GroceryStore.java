@@ -61,7 +61,9 @@ public class GroceryStore implements Serializable {
 		 * @return TRUE if the member was removed, FALSE if the member was not removed
 		 */
 		public boolean remove(String id) {
+
 			for (Member member : members) {
+
 				if (member.getId().equalsIgnoreCase(id)) {
 					return members.remove(member);
 				}
@@ -479,9 +481,13 @@ public class GroceryStore implements Serializable {
 		Result result = new Result();
 		String productId = productsList.add(new Product(request.getProductName(), request.getProductId(),
 				request.getProductCurrentPrice(), request.getProductStockOnHand(), request.getProductReorderLevel()));
+
 		if (!productId.equalsIgnoreCase("")) {
+
 			result.setResultCode(Result.ACTION_SUCCESSFUL);
-			result.setProductFields(productsList.searchById(request.getProductId()));
+
+			result.setProductFields(productsList.searchById(productId));
+
 			reorderProduct(productsList.searchById(request.getProductId()));
 		} else {
 			result.setResultCode(Result.ACTION_FAILED);
