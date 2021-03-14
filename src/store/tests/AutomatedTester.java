@@ -123,9 +123,7 @@ public class AutomatedTester {
 		for (int index : checkedOutProductIndexes) {
 
 			Request.instance().setProductId(productIds[index]);
-
 			Request.instance().setOrderQuantity(checkedOutQuantity);
-
 			Result result = checkOut.addItem(Request.instance());
 			// testing addItem from CheckOut (inner class of GroceryStore
 			assert result.getResultCode() == Result.ACTION_SUCCESSFUL;
