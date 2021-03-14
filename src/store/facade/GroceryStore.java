@@ -482,10 +482,9 @@ public class GroceryStore implements Serializable {
 		String productId = productsList.add(new Product(request.getProductName(), request.getProductId(),
 				request.getProductCurrentPrice(), request.getProductStockOnHand(), request.getProductReorderLevel()));
 
-		result.setProductFields(productsList.searchById(productId));
-
 		if (!productId.equalsIgnoreCase("")) {
 			result.setResultCode(Result.ACTION_SUCCESSFUL);
+			result.setProductFields(productsList.searchById(productId));
 			reorderProduct(productsList.searchById(request.getProductId()));
 		} else {
 			result.setResultCode(Result.ACTION_FAILED);
