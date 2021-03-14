@@ -485,7 +485,9 @@ public class GroceryStore implements Serializable {
 		if (!productId.equalsIgnoreCase("")) {
 
 			result.setResultCode(Result.ACTION_SUCCESSFUL);
+
 			result.setProductFields(productsList.searchById(productId));
+
 			reorderProduct(productsList.searchById(request.getProductId()));
 		} else {
 			result.setResultCode(Result.ACTION_FAILED);
@@ -611,14 +613,14 @@ public class GroceryStore implements Serializable {
 	}
 
 	/**
-	 * Processes an outstanding order from the ordersList.
+	 * Processes an outstanding order (aka. new shipment) from the ordersList.
 	 * 
 	 * @param request - Request object (part of DataTransfer logic) carrying the
 	 *                order number/ID info
 	 * @return Result object (part of DataTransfer logic) carrying info about the
 	 *         product re-stocked, the order number, and result code
 	 */
-	public Result processOrder(Request request) {
+	public Result processShipment(Request request) {
 		Order order = ordersList.searchById(request.getOrderId());
 		Result result = new Result();
 		// following if clause carried out if the order does not exist OR has already

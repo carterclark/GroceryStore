@@ -1,8 +1,10 @@
 package store.tests;
 
 import java.util.Calendar;
+import java.util.Iterator;
 
 import store.facade.GroceryStore;
+import store.facade.GroceryStore.CheckOut;
 import store.facade.Request;
 import store.facade.Result;
 
@@ -28,10 +30,16 @@ public class AutomatedTester {
 			"Ice Cream Vanilla 1qt", "Ice Cream Chocolate 1qt" };
 	private String[] productIds = { "P-1", "P-2", "P-3", "P-4", "P-5", "P-6", "P-7", "P-8", "P-9", "P-10", "P-11",
 			"P-12", "P-13", "P-14", "P-15", "P-16", "P-17", "P-18", "P-19", "P-20" };
-	private int[] stockOnHand = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
-	private int[] reorderLevel = { 1, 2, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 };
+	private int[] reorderLevel = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
 	private double[] currentPrice = { 1.99, 3.79, 1.99, 3.79, 3.79, 4.5, 3.75, 2.29, 4.99, 3.99, 0.89, 1.49, 1.89, 0.6,
 			1.89, 0.6, 1.89, 0.6, 3.97, 3.97 };
+
+	private int orderCount = 20;
+	private String[] orderNumbers = { "O-1", "O-2", "O-3", "O-4", "O-5", "O-6", "O-7", "O-8", "O-9", "O-10", "O-11",
+			"O-12", "O-13", "O-14", "O-15", "O-16", "O-17", "O-18", "O-19", "O-20" };
+	private String checkedOutMemberId = "M-2";
+	private int[] checkedOutProductIndexes = { 4, 9, 14, 19 };
+	private int checkedOutQuantity = 10;
 
 	public void testEnrollMember() {
 
@@ -80,7 +88,7 @@ public class AutomatedTester {
 
 			Request.instance().setProductName(productNames[index]);
 			Request.instance().setProductId(productIds[index]);
-			Request.instance().setProductStockOnHand(stockOnHand[index]);
+			Request.instance().setProductStockOnHand(0);
 			Request.instance().setProductReorderLevel(reorderLevel[index]);
 			Request.instance().setProductCurrentPrice(currentPrice[index]);
 
@@ -89,9 +97,44 @@ public class AutomatedTester {
 			assert result.getResultCode() == Result.ACTION_SUCCESSFUL;
 			assert result.getProductName().equalsIgnoreCase(productNames[index]);
 			assert result.getProductId().equalsIgnoreCase(productIds[index]);
-			assert result.getProductStockOnHand() == stockOnHand[index];
+			assert result.getProductStockOnHand() == 0;
 			assert result.getProductReorderLevel() == reorderLevel[index];
 			assert result.getProductCurrentPrice() == currentPrice[index];
+		}
+	}
+
+	public void testProcessShipment() {
+		for (int index = 0; index < orderCount; index++) {
+			Request.instance().setOrderId(orderNumbers[index]);
+
+			Result result = GroceryStore.instance().processShipment(Request.instance());
+
+			assert result.getResultCode() == Result.ACTION_SUCCESSFUL;
+			assert result.getOrderId().equalsIgnoreCase(orderNumbers[index]);
+			assert result.getProductName().equalsIgnoreCase(productNames[index]);
+			assert result.getProductId().equalsIgnoreCase(productIds[index]);
+			assert result.getProductStockOnHand() == reorderLevel[index] * 2;
+		}
+	}
+
+	public void testCheckOut() {
+		CheckOut checkOut = GroceryStore.instance().new CheckOut(checkedOutMemberId);
+		for (int index : checkedOutProductIndexes) {
+			Request.instance().setProductId(productIds[index]);
+			Request.instance().setOrderQuantity(checkedOutQuantity);
+			Result result = checkOut.addItem(Request.instance());
+			// testing addItem from CheckOut (inner class of GroceryStore
+			assert result.getResultCode() == Result.ACTION_SUCCESSFUL;
+		}
+		Iterator<Result> returnedIterator = checkOut.closeCheckOut();
+		int counter = 0;
+		// testing closeCheckout from CheckOut (returning list of reordered products
+		for (Iterator<Result> iterator = returnedIterator; iterator.hasNext();) {
+			Result result = iterator.next();
+			assert result.getProductId().equalsIgnoreCase(productIds[checkedOutProductIndexes[counter]]);
+			assert result.getOrderQuantity() == reorderLevel[checkedOutProductIndexes[counter]] * 2;
+			assert result.getOrderId().equalsIgnoreCase("O-" + (counter + 21));
+			counter++;
 		}
 	}
 
@@ -102,6 +145,10 @@ public class AutomatedTester {
 		testRemoveMember();
 
 		testAddProduct();
+
+		testProcessShipment();
+
+//		testCheckOut();
 
 //		UserInterface.instance().listMembers();
 //		UserInterface.instance().listProducts();
