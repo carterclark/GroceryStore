@@ -491,7 +491,31 @@ public class UserInterface implements Serializable {
 
 	}
 
+	/**
+	 * Lists all products that start with a given name and displays their name, id,
+	 * price, stock in hand, and reorder level.
+	 */
 	public void getProductInfo() {
+		String name = getString("Enter product's name: ");
+		Iterator<Result> iter = groceryStore.getProductInfo(name);
+		Result result;
+
+		if (!iter.hasNext()) {
+			System.out.println("Error: product does not exist");
+		} else {
+			result = iter.next();
+			if (result.getResultCode() != Result.ACTION_SUCCESSFUL) {
+				System.out.println("Error: product does not exist");
+			} else {
+				while (iter.hasNext()) {
+					System.out.printf("Product: %s, ID: %s, Price: %.2f, Stock in hand: %d, reorder level: %d\n\n",
+							result.getProductName(), result.getProductId(), result.getProductCurrentPrice(),
+							result.getProductStockOnHand(), result.getProductReorderLevel());
+					result = iter.next();
+				}
+			}
+		}
+
 	}
 
 	public void getMemberInfo() {
