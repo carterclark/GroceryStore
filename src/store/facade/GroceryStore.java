@@ -696,12 +696,6 @@ public class GroceryStore implements Serializable {
 			}
 		}
 
-		// if its empty that means no products start with that name
-		if (result.isEmpty()) {
-			result.add(new Result());
-			result.get(0).setResultCode(Result.ACTION_FAILED);
-		}
-
 		return result.iterator();
 	}
 
