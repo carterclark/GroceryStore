@@ -14,10 +14,12 @@ public class AutomatedTester {
 
 	private int memberCount = 7;
 	private int removeMemberCount = 2;
-	private String[] names = { "Paul", "George", "John", "Ringo", "Elton", "n1", "n2" };
+
+	private String[] names = { "Paul", "George", "John", "Ringo", "Elton", "Madonna", "Pink" };
 	private String[] addresses = { "123 Fair Ave.", "555 Ocean Front Pkwy.", "147 W 5th St.", "10 Downing St.",
-			"1600 Pennsylvania Ave. NW", "a1", "a2" };
-	private String[] phones = { "3125559876", "3105551245", "6515552045", "02055590000", "2025551000", "p1", "p2" };
+			"1600 Pennsylvania Ave. NW", "25410 Sunset Blvd.", "211 Sandy Ridge Rd." };
+	private String[] phones = { "3125559876", "3105551245", "6515552045", "02055590000", "2025551000", "2135558548",
+			"2675551795" };
 	private Calendar calendar = Calendar.getInstance();
 	private Calendar[] dates = new Calendar[memberCount];
 	private double[] feesPaid = { 12, 13.67, 14.90, 17, 20, 4.60, 5.50 };
@@ -125,19 +127,21 @@ public class AutomatedTester {
 			Request.instance().setProductId(productIds[index]);
 			Request.instance().setOrderQuantity(checkedOutQuantity);
 			Result result = checkOut.addItem(Request.instance());
-			// testing addItem from CheckOut (inner class of GroceryStore
+			// testing addItem from CheckOut (inner class of GroceryStore)
 			assert result.getResultCode() == Result.ACTION_SUCCESSFUL;
 		}
 
 		Iterator<Result> returnedIterator = checkOut.closeCheckOut();
 		int counter = 0;
-		// testing closeCheckout from CheckOut (returning list of reordered products
+		// testing closeCheckout from CheckOut (returning list of reordered products)
 		for (Iterator<Result> iterator = returnedIterator; iterator.hasNext();) {
 
 			Result result = iterator.next();
 			assert result.getProductId().equalsIgnoreCase(productIds[checkedOutProductIndexes[counter]]);
 			assert result.getOrderQuantity() == reorderLevel[checkedOutProductIndexes[counter]] * 2;
-			assert result.getOrderId().equalsIgnoreCase("O-" + (counter + 21));
+			// these order numbers start at 21; the first 20 were creating when adding new
+			// products
+			assert result.getOrderId().equalsIgnoreCase("O-" + (counter + orderCount + 1));
 			counter++;
 		}
 	}

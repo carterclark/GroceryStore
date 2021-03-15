@@ -288,7 +288,7 @@ public class UserInterface implements Serializable {
 	 * information to, and retrieve it from, the facade.
 	 */
 	public void enrollMember() {
-		String name = getString("Enter new member's name: ");
+		String name = getString("\nEnter new member's name: ");
 		String address = getString("Enter member's address: ");
 		String phoneNumber = String.valueOf(
 				getLong("Enter member's phone number (in format 1234567890): ", "You didn't enter a phone number."));
@@ -310,7 +310,7 @@ public class UserInterface implements Serializable {
 	 * Removes a member from the database.
 	 */
 	public void removeMember() {
-		Request.instance().setMemberId(getString("Enter member's ID to be removed: "));
+		Request.instance().setMemberId(getString("\nEnter member's ID to be removed: "));
 		Result result = groceryStore.removeMember(Request.instance());
 		switch (result.getResultCode()) {
 		case Result.INVALID_MEMBER_ID:
@@ -333,7 +333,7 @@ public class UserInterface implements Serializable {
 	 * id already present
 	 */
 	public void addProduct() {
-		String name = getString("Enter product's name: ");
+		String name = getString("\nEnter product's name: ");
 		if (groceryStore.productNameExists(name)) {
 			System.out.println("Error: product name already exists, a different one must be entered.");
 			return;
@@ -353,7 +353,8 @@ public class UserInterface implements Serializable {
 		Request.instance().setProductReorderLevel(reorderedLevel);
 		Result result = groceryStore.addProduct(Request.instance());
 		if (result.getResultCode() == Result.ACTION_SUCCESSFUL) {
-			System.out.println("Product " + result.getProductName() + " added.");
+			System.out.println(
+					"Product " + result.getProductName() + " added. (Order number " + result.getOrderId() + ".)");
 		} else {
 			System.out.println("Product could not be added");
 		}
@@ -363,7 +364,7 @@ public class UserInterface implements Serializable {
 	 * Performs a member's checkout. ("Buying items".)
 	 */
 	public void checkOut() {
-		String memberId = getString("Enter member's ID (M-<number>): ");
+		String memberId = getString("\nEnter member's ID (M-<number>): ");
 		// next if clause is carried out if the member exists
 		if (groceryStore.memberIdExists(memberId)) {
 			// opening a checkout
@@ -441,14 +442,14 @@ public class UserInterface implements Serializable {
 	 */
 	public void processShipment() {
 		do {
-			String orderNumber = getString("Enter outstanding order number: ");
+			String orderNumber = getString("\nEnter outstanding order number: ");
 			if (!groceryStore.orderIdExists(orderNumber)) {
 				System.out.println("The order number is not on file.");
-				return;
+				continue;
 			}
 			if (!groceryStore.orderIsOutstanding(orderNumber)) {
 				System.out.println("The order " + orderNumber + " has already been processed.");
-				return;
+				continue;
 			}
 			// following portion is carried out only if the order number exists and order is
 			// outstanding
@@ -457,7 +458,7 @@ public class UserInterface implements Serializable {
 			// order is processed by GroceryStore's processOrder() method
 			Result result = groceryStore.processShipment(Request.instance());
 			if (result.getResultCode() == Result.ACTION_SUCCESSFUL) {
-				System.out.println("Order " + orderNumber + "successfully processed:");
+				System.out.println("Order " + orderNumber.toUpperCase() + " successfully processed:");
 				System.out.println("Product " + result.getProductId() + ", '" + result.getProductName()
 						+ "', has a new stock quantity of " + result.getProductStockOnHand() + " unit(s).");
 			} else {
@@ -471,7 +472,7 @@ public class UserInterface implements Serializable {
 	 * new price.
 	 */
 	public void changePrice() {
-		String id = getString("Enter product's id: ");
+		String id = getString("\nEnter product's id: ");
 		if (groceryStore.productIdExists(id)) {
 			Request.instance().setProductId(id);
 			double currentPrice = getDouble("Enter product's new current price: ", "A valid number was not entered.");
@@ -497,28 +498,42 @@ public class UserInterface implements Serializable {
 	 */
 	public void getProductInfo() {
 		String name = getString("Enter product's name: ");
-		Iterator<Result> iter = groceryStore.getProductInfo(name);
+		Iterator<Result> iterator = groceryStore.getProductInfo(name);
 		Result result;
 
-		if (!iter.hasNext()) {
+		if (!iterator.hasNext()) {
 			System.out.println("Error: product does not exist");
 		} else {
-			result = iter.next();
-			if (result.getResultCode() != Result.ACTION_SUCCESSFUL) {
-				System.out.println("Error: product does not exist");
-			} else {
-				while (iter.hasNext()) {
-					System.out.printf("Product: %s, ID: %s, Price: %.2f, Stock in hand: %d, reorder level: %d\n\n",
-							result.getProductName(), result.getProductId(), result.getProductCurrentPrice(),
-							result.getProductStockOnHand(), result.getProductReorderLevel());
-					result = iter.next();
-				}
+			while (iterator.hasNext()) {
+				// print info for each result object
+				result = iterator.next();
+				System.out.printf("Product: %s, ID: %s, Price: %.2f, Stock in hand: %d, reorder level: %d\n\n",
+						result.getProductName(), result.getProductId(), result.getProductCurrentPrice(),
+						result.getProductStockOnHand(), result.getProductReorderLevel());
 			}
 		}
-
 	}
 
+	/**
+	 * Lists all members that start with a given name and displays their address,
+	 * fee paid, and id
+	 */
 	public void getMemberInfo() {
+
+		String name = getString("Enter Member's name: ");
+		Iterator<Result> iterator = groceryStore.getMemberInfo(name);
+		Result result;
+
+		if (!iterator.hasNext()) {
+			System.out.println("Error: Member does not exist");
+		} else {
+			while (iterator.hasNext()) {
+				// print info for each result object
+				result = iterator.next();
+				System.out.printf("Member: %s, Address: %s, Fee paid: %.2f, ID: %s\n\n", result.getMemberName(),
+						result.getMemberAddress(), result.getMemberFeePaid(), result.getMemberId());
+			}
+		}
 	}
 
 	public void printTransactions() {
@@ -537,7 +552,7 @@ public class UserInterface implements Serializable {
 		// next if clause is carried out if the database of members is non-empty
 		if (iterator.hasNext()) {
 			// displays the header of the table
-			System.out.println(String.format("%-9s", "Member ID") + "  " + String.format("%-23s", "Name") + "  "
+			System.out.println("\n" + String.format("%-9s", "Member ID") + "  " + String.format("%-23s", "Name") + "  "
 					+ String.format("%-28s", "Address") + "  " + String.format("%-11s", "Ph. number") + "  "
 					+ String.format("%-10s", "Joined"));
 			System.out.println("-".repeat(89));
@@ -575,9 +590,9 @@ public class UserInterface implements Serializable {
 		Iterator<Result> iterator = groceryStore.getAllProducts();
 		if (iterator.hasNext()) {
 			// displays the header of the table
-			System.out.println(String.format("%-10s", "Product ID") + "  " + String.format("%-25s", "Product Name")
-					+ "  " + String.format("%-13s", "Current Price") + "  " + String.format("%-13s", "Stock On Hand")
-					+ "  " + String.format("%-13s", "Reorder Level"));
+			System.out.println("\n" + String.format("%-10s", "Product ID") + "  "
+					+ String.format("%-25s", "Product Name") + "  " + String.format("%-13s", "Current Price") + "  "
+					+ String.format("%-13s", "Stock On Hand") + "  " + String.format("%-13s", "Reorder Level"));
 			System.out.println("-".repeat(82));
 			// for loop prints all products
 			for (Iterator<Result> counter = iterator; counter.hasNext();) {
@@ -611,7 +626,6 @@ public class UserInterface implements Serializable {
 		do {
 			System.out.println();
 			action = getInteger("Enter option number (" + HELP + " for help): ", "Not a valid option number.");
-			System.out.println();
 			switch (action) {
 			case ENROLL_MEMBER:
 				enrollMember();
@@ -672,9 +686,11 @@ public class UserInterface implements Serializable {
 	 * @param args N/A
 	 */
 	public static void main(String[] args) {
-		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
+		System.out.println(
+				"★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 		System.out.println("★★★ WELCOME TO OUR GROCERY STORE ★★★");
-		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
+		System.out.println(
+				"★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
 		if (getYesOrNo("Would you like to load Store data from the disk?")) {
 			load();
 		} else {
