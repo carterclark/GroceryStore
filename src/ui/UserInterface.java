@@ -497,33 +497,19 @@ public class UserInterface implements Serializable {
 	 * price, stock in hand, and reorder level.
 	 */
 	public void getProductInfo() {
-<<<<<<< HEAD
 		String name = getString("Enter product's name: ");
 		Iterator<Result> iterator = groceryStore.getProductInfo(name);
-=======
-		String name = getString("\nEnter product's name: ");
-		Iterator<Result> iter = groceryStore.getProductInfo(name);
->>>>>>> upstream/main
 		Result result;
 
 		if (!iterator.hasNext()) {
 			System.out.println("Error: product does not exist");
 		} else {
-			result = iterator.next();
-			if (result.getResultCode() != Result.ACTION_SUCCESSFUL) {
-				System.out.println("Error: product does not exist");
-			} else {
-				// print out info from result from earlier check
+			while (iterator.hasNext()) {
+				// print info for each result object
+				result = iterator.next();
 				System.out.printf("Product: %s, ID: %s, Price: %.2f, Stock in hand: %d, reorder level: %d\n\n",
 						result.getProductName(), result.getProductId(), result.getProductCurrentPrice(),
 						result.getProductStockOnHand(), result.getProductReorderLevel());
-				while (iterator.hasNext()) {
-					// print info for each result object
-					result = iterator.next();
-					System.out.printf("Product: %s, ID: %s, Price: %.2f, Stock in hand: %d, reorder level: %d\n\n",
-							result.getProductName(), result.getProductId(), result.getProductCurrentPrice(),
-							result.getProductStockOnHand(), result.getProductReorderLevel());
-				}
 			}
 		}
 	}
@@ -541,19 +527,11 @@ public class UserInterface implements Serializable {
 		if (!iterator.hasNext()) {
 			System.out.println("Error: Member does not exist");
 		} else {
-			result = iterator.next();
-			if (result.getResultCode() != Result.ACTION_SUCCESSFUL) {
-				System.out.println("Error: Member does not exist");
-			} else {
-				// print out info from result from earlier check
+			while (iterator.hasNext()) {
+				// print info for each result object
+				result = iterator.next();
 				System.out.printf("Member: %s, Address: %s, Fee paid: %.2f, ID: %s\n\n", result.getMemberName(),
 						result.getMemberAddress(), result.getMemberFeePaid(), result.getMemberId());
-				while (iterator.hasNext()) {
-					// print info for each result object
-					result = iterator.next();
-					System.out.printf("Member: %s, Address: %s, Fee paid: %.2f, ID: %s\n\n", result.getMemberName(),
-							result.getMemberAddress(), result.getMemberFeePaid(), result.getMemberId());
-				}
 			}
 		}
 	}
