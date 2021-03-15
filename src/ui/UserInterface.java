@@ -497,29 +497,43 @@ public class UserInterface implements Serializable {
 	 * price, stock in hand, and reorder level.
 	 */
 	public void getProductInfo() {
-		String name = getString("\nEnter product's name: ");
-		Iterator<Result> iter = groceryStore.getProductInfo(name);
+		String name = getString("Enter product's name: ");
+		Iterator<Result> iterator = groceryStore.getProductInfo(name);
 		Result result;
 
-		if (!iter.hasNext()) {
+		if (!iterator.hasNext()) {
 			System.out.println("Error: product does not exist");
 		} else {
-			result = iter.next();
-			if (result.getResultCode() != Result.ACTION_SUCCESSFUL) {
-				System.out.println("Error: product does not exist");
-			} else {
-				while (iter.hasNext()) {
-					System.out.printf("Product: %s, ID: %s, Price: %.2f, Stock in hand: %d, reorder level: %d\n\n",
-							result.getProductName(), result.getProductId(), result.getProductCurrentPrice(),
-							result.getProductStockOnHand(), result.getProductReorderLevel());
-					result = iter.next();
-				}
+			while (iterator.hasNext()) {
+				// print info for each result object
+				result = iterator.next();
+				System.out.printf("Product: %s, ID: %s, Price: %.2f, Stock in hand: %d, reorder level: %d\n\n",
+						result.getProductName(), result.getProductId(), result.getProductCurrentPrice(),
+						result.getProductStockOnHand(), result.getProductReorderLevel());
 			}
 		}
-
 	}
 
+	/**
+	 * Lists all members that start with a given name and displays their address,
+	 * fee paid, and id
+	 */
 	public void getMemberInfo() {
+
+		String name = getString("Enter Member's name: ");
+		Iterator<Result> iterator = groceryStore.getMemberInfo(name);
+		Result result;
+
+		if (!iterator.hasNext()) {
+			System.out.println("Error: Member does not exist");
+		} else {
+			while (iterator.hasNext()) {
+				// print info for each result object
+				result = iterator.next();
+				System.out.printf("Member: %s, Address: %s, Fee paid: %.2f, ID: %s\n\n", result.getMemberName(),
+						result.getMemberAddress(), result.getMemberFeePaid(), result.getMemberId());
+			}
+		}
 	}
 
 	public void printTransactions() {
@@ -672,9 +686,11 @@ public class UserInterface implements Serializable {
 	 * @param args N/A
 	 */
 	public static void main(String[] args) {
-		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
+		System.out.println(
+				"★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 		System.out.println("★★★ WELCOME TO OUR GROCERY STORE ★★★");
-		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
+		System.out.println(
+				"★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
 		if (getYesOrNo("Would you like to load Store data from the disk?")) {
 			load();
 		} else {

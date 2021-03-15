@@ -645,31 +645,55 @@ public class GroceryStore implements Serializable {
 	}
 
 	/**
-	 * Gets product information of products that start with string s
+	 * Gets product information of products that start with string startsWith
 	 * 
-	 * @param s is the name string
-	 * @return a result code ArrayList that represents the outcome
+	 * @param startsWith is the name string
+	 * @return a result ArrayList's iterator that represents the outcome of the
+	 *         search
 	 */
-	public Iterator<Result> getProductInfo(String s) {
+	public Iterator<Result> getProductInfo(String startsWith) {
 		ArrayList<Result> result = new ArrayList<Result>();
-		String name = s.toUpperCase();
+		String name = startsWith.toUpperCase();
 
 		// checks if any products start with the given name and stores into result if it
 		// does
-		int i = 0;
-		for (Iterator<Product> iterator = productsList.iterator(); iterator.hasNext(); i++) {
+		int index = 0;
+		for (Iterator<Product> iterator = productsList.iterator(); iterator.hasNext();) {
 			Product product = iterator.next();
 			if (product.getName().toUpperCase().startsWith(name)) {
 				result.add(new Result());
-				result.get(i).setResultCode(Result.ACTION_SUCCESSFUL);
-				result.get(i).setProductFields(product);
+				result.get(index).setResultCode(Result.ACTION_SUCCESSFUL);
+				result.get(index).setProductFields(product);
+				index++;
 			}
 		}
 
-		// if its empty that means no products start with that name
-		if (result.isEmpty()) {
-			result.add(new Result());
-			result.get(0).setResultCode(Result.ACTION_FAILED);
+		return result.iterator();
+	}
+
+	/**
+	 * Gets Member information for members that start with string startsWith
+	 * 
+	 * @param startsWith is the name string
+	 * @return a result ArrayList's iterator that represents the outcome of the
+	 *         search
+	 */
+	public Iterator<Result> getMemberInfo(String startsWith) {
+		ArrayList<Result> result = new ArrayList<Result>();
+		String name = startsWith.toUpperCase();
+
+		// checks if any of the Member's start with the given string and stores into
+		// result if it
+		// does
+		int index = 0;
+		for (Iterator<Member> iterator = membersList.iterator(); iterator.hasNext();) {
+			Member member = iterator.next();
+			if (member.getName().toUpperCase().startsWith(name)) {
+				result.add(new Result());
+				result.get(index).setResultCode(Result.ACTION_SUCCESSFUL);
+				result.get(index).setMemberFields(member);
+				index++;
+			}
 		}
 
 		return result.iterator();
