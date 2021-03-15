@@ -648,10 +648,11 @@ public class GroceryStore implements Serializable {
 	}
 
 	/**
-	 * Gets product information of products that start with string s
+	 * Gets product information of products that start with string startsWith
 	 * 
 	 * @param startsWith is the name string
-	 * @return a result code ArrayList that represents the outcome
+	 * @return a result ArrayList's iterator that represents the outcome of the
+	 *         search
 	 */
 	public Iterator<Result> getProductInfo(String startsWith) {
 		ArrayList<Result> result = new ArrayList<Result>();
@@ -666,6 +667,40 @@ public class GroceryStore implements Serializable {
 				result.add(new Result());
 				result.get(index).setResultCode(Result.ACTION_SUCCESSFUL);
 				result.get(index).setProductFields(product);
+				index++;
+			}
+		}
+
+		// if its empty that means no products start with that name
+		if (result.isEmpty()) {
+			result.add(new Result());
+			result.get(0).setResultCode(Result.ACTION_FAILED);
+		}
+
+		return result.iterator();
+	}
+
+	/**
+	 * Gets Member information for members that start with string startsWith
+	 * 
+	 * @param startsWith is the name string
+	 * @return a result ArrayList's iterator that represents the outcome of the
+	 *         search
+	 */
+	public Iterator<Result> getMemberInfo(String startsWith) {
+		ArrayList<Result> result = new ArrayList<Result>();
+		String name = startsWith.toUpperCase();
+
+		// checks if any of the Member's start with the given string and stores into
+		// result if it
+		// does
+		int index = 0;
+		for (Iterator<Member> iterator = membersList.iterator(); iterator.hasNext();) {
+			Member member = iterator.next();
+			if (member.getName().toUpperCase().startsWith(name)) {
+				result.add(new Result());
+				result.get(index).setResultCode(Result.ACTION_SUCCESSFUL);
+				result.get(index).setMemberFields(member);
 				index++;
 			}
 		}

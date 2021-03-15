@@ -522,7 +522,34 @@ public class UserInterface implements Serializable {
 		}
 	}
 
+	/**
+	 * Lists all members that start with a given name and displays their address,
+	 * fee paid, and id
+	 */
 	public void getMemberInfo() {
+
+		String name = getString("Enter Member's name: ");
+		Iterator<Result> iterator = groceryStore.getMemberInfo(name);
+		Result result;
+
+		if (!iterator.hasNext()) {
+			System.out.println("Error: Member does not exist");
+		} else {
+			result = iterator.next();
+			if (result.getResultCode() != Result.ACTION_SUCCESSFUL) {
+				System.out.println("Error: Member does not exist");
+			} else {
+				// print out info from result from earlier check
+				System.out.printf("Member: %s, Address: %s, Fee paid: %.2f, ID: %s\n\n", result.getMemberName(),
+						result.getMemberAddress(), result.getMemberFeePaid(), result.getMemberId());
+				while (iterator.hasNext()) {
+					// print info for each result object
+					result = iterator.next();
+					System.out.printf("Member: %s, Address: %s, Fee paid: %.2f, ID: %s\n\n", result.getMemberName(),
+							result.getMemberAddress(), result.getMemberFeePaid(), result.getMemberId());
+				}
+			}
+		}
 	}
 
 	public void printTransactions() {
