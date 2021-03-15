@@ -497,25 +497,29 @@ public class UserInterface implements Serializable {
 	 */
 	public void getProductInfo() {
 		String name = getString("Enter product's name: ");
-		Iterator<Result> iter = groceryStore.getProductInfo(name);
+		Iterator<Result> iterator = groceryStore.getProductInfo(name);
 		Result result;
 
-		if (!iter.hasNext()) {
+		if (!iterator.hasNext()) {
 			System.out.println("Error: product does not exist");
 		} else {
-			result = iter.next();
+			result = iterator.next();
 			if (result.getResultCode() != Result.ACTION_SUCCESSFUL) {
 				System.out.println("Error: product does not exist");
 			} else {
-				while (iter.hasNext()) {
+				// print out info from result from earlier check
+				System.out.printf("Product: %s, ID: %s, Price: %.2f, Stock in hand: %d, reorder level: %d\n\n",
+						result.getProductName(), result.getProductId(), result.getProductCurrentPrice(),
+						result.getProductStockOnHand(), result.getProductReorderLevel());
+				while (iterator.hasNext()) {
+					// print info for each result object
+					result = iterator.next();
 					System.out.printf("Product: %s, ID: %s, Price: %.2f, Stock in hand: %d, reorder level: %d\n\n",
 							result.getProductName(), result.getProductId(), result.getProductCurrentPrice(),
 							result.getProductStockOnHand(), result.getProductReorderLevel());
-					result = iter.next();
 				}
 			}
 		}
-
 	}
 
 	public void getMemberInfo() {
@@ -672,9 +676,11 @@ public class UserInterface implements Serializable {
 	 * @param args N/A
 	 */
 	public static void main(String[] args) {
-		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
+		System.out.println(
+				"★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 		System.out.println("★★★ WELCOME TO OUR GROCERY STORE ★★★");
-		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
+		System.out.println(
+				"★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
 		if (getYesOrNo("Would you like to load Store data from the disk?")) {
 			load();
 		} else {

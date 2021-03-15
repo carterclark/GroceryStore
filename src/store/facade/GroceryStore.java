@@ -650,22 +650,23 @@ public class GroceryStore implements Serializable {
 	/**
 	 * Gets product information of products that start with string s
 	 * 
-	 * @param s is the name string
+	 * @param startsWith is the name string
 	 * @return a result code ArrayList that represents the outcome
 	 */
-	public Iterator<Result> getProductInfo(String s) {
+	public Iterator<Result> getProductInfo(String startsWith) {
 		ArrayList<Result> result = new ArrayList<Result>();
-		String name = s.toUpperCase();
+		String name = startsWith.toUpperCase();
 
 		// checks if any products start with the given name and stores into result if it
 		// does
-		int i = 0;
-		for (Iterator<Product> iterator = productsList.iterator(); iterator.hasNext(); i++) {
+		int index = 0;
+		for (Iterator<Product> iterator = productsList.iterator(); iterator.hasNext();) {
 			Product product = iterator.next();
 			if (product.getName().toUpperCase().startsWith(name)) {
 				result.add(new Result());
-				result.get(i).setResultCode(Result.ACTION_SUCCESSFUL);
-				result.get(i).setProductFields(product);
+				result.get(index).setResultCode(Result.ACTION_SUCCESSFUL);
+				result.get(index).setProductFields(product);
+				index++;
 			}
 		}
 
