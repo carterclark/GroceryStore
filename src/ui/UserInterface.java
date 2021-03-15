@@ -516,7 +516,7 @@ public class UserInterface implements Serializable {
 			while (iterator.hasNext()) {
 				// print info for each result object
 				result = iterator.next();
-				System.out.printf("Product: %s, ID: %s, Price: %.2f, Stock in hand: %d, reorder level: %d\n\n",
+				System.out.printf("Product: %s, ID: %s, Price: %.2f, Stock in hand: %d, reorder level: %d\n",
 						result.getProductName(), result.getProductId(), result.getProductCurrentPrice(),
 						result.getProductStockOnHand(), result.getProductReorderLevel());
 			}
@@ -539,7 +539,7 @@ public class UserInterface implements Serializable {
 			while (iterator.hasNext()) {
 				// print info for each result object
 				result = iterator.next();
-				System.out.printf("Member: %s, Address: %s, Fee paid: %.2f, ID: %s\n\n", result.getMemberName(),
+				System.out.printf("Member: %s, Address: %s, Fee paid: %.2f, ID: %s\n", result.getMemberName(),
 						result.getMemberAddress(), result.getMemberFeePaid(), result.getMemberId());
 			}
 		}
@@ -695,11 +695,9 @@ public class UserInterface implements Serializable {
 	 * @param args N/A
 	 */
 	public static void main(String[] args) {
-		System.out.println(
-				"★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
+		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 		System.out.println("★★★ WELCOME TO OUR GROCERY STORE ★★★");
-		System.out.println(
-				"★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
+		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
 		if (getYesOrNo("Would you like to load Store data from the disk?")) {
 			load();
 		} else {
