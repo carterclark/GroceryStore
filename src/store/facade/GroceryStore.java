@@ -328,6 +328,9 @@ public class GroceryStore implements Serializable {
 					Item item = iterator.next();
 					Product product = productsList.searchById(item.getProductId());
 					product.setStockOnHand(product.getStockOnHand() + item.getQuantity());
+					if (product.getStockOnHand() > product.getReorderLevel()) {
+						product.setOrdered(false);
+					}
 				}
 				// checkout is set to null for safety reasons: nothing can be added to it--a new
 				// one has to be open
@@ -481,14 +484,8 @@ public class GroceryStore implements Serializable {
 		Result result = new Result();
 		String productId = productsList.add(new Product(request.getProductName(), request.getProductId(),
 				request.getProductCurrentPrice(), request.getProductStockOnHand(), request.getProductReorderLevel()));
-
 		if (!productId.equalsIgnoreCase("")) {
-
-			result.setResultCode(Result.ACTION_SUCCESSFUL);
-
-			result.setProductFields(productsList.searchById(productId));
-
-			reorderProduct(productsList.searchById(request.getProductId()));
+			result = reorderProduct(productsList.searchById(request.getProductId()));
 		} else {
 			result.setResultCode(Result.ACTION_FAILED);
 		}
