@@ -225,7 +225,7 @@ public class GroceryStore implements Serializable {
 
 	// ------------------------CheckOut Class---------------------------------
 	/**
-	 * Inner class of the GroceryStore. It's a public class so other entities than
+	 * Inner class of the GroceryStore. It's a public class so entities other than
 	 * GroceryStore can use it.
 	 * 
 	 * @author
@@ -234,11 +234,13 @@ public class GroceryStore implements Serializable {
 	public class CheckOut {
 
 		private Transaction checkOut;
-		private boolean checkOutOpen = false;
+		// if checkOutOpen is set to FALSE, no items can be added or removed from
+		// checkout - it's closed forever; it also cannot be set to TRUE (open) by user
+		private boolean checkOutOpen;
 		private String memberId;
 
 		/**
-		 * Opens a new checkout, but only if there isn't one open.
+		 * Opens a new checkout.
 		 * 
 		 * @param memberId - ID of the member checking out
 		 */
@@ -328,12 +330,9 @@ public class GroceryStore implements Serializable {
 					Item item = iterator.next();
 					Product product = productsList.searchById(item.getProductId());
 					product.setStockOnHand(product.getStockOnHand() + item.getQuantity());
-					if (product.getStockOnHand() > product.getReorderLevel()) {
-						product.setOrdered(false);
-					}
 				}
-				// checkout is set to null for safety reasons: nothing can be added to it--a new
-				// one has to be open
+				// checkout is set to null for safety reasons: nothing can be added to it - a
+				// new one has to be open
 				memberId = "";
 				checkOut = null;
 				result.setResultCode(Result.ACTION_SUCCESSFUL);
@@ -375,8 +374,8 @@ public class GroceryStore implements Serializable {
 						list.add(result);
 					}
 				}
-				// checkout is set to null for safety reasons: nothing can be added to it--a new
-				// one has to be open
+				// checkout is set to null for safety reasons: nothing can be added to it - a
+				// new one has to be open
 				memberId = "";
 				checkOut = null;
 			}
@@ -472,6 +471,22 @@ public class GroceryStore implements Serializable {
 	 */
 	public boolean memberIdExists(String memberId) {
 		return (membersList.searchById(memberId) != null);
+	}
+
+	/**
+	 * Gets a member with the specified ID.
+	 * 
+	 * @param memberId - ID of the member needed
+	 * @return Result object with member fields set to a requested member
+	 */
+	public Result getMember(String memberId) {
+		Member member = membersList.searchById(memberId);
+		Result result = new Result();
+		if (!(member == null)) {
+			result.setMemberFields(member);
+			return result;
+		}
+		return null;
 	}
 
 	/**
