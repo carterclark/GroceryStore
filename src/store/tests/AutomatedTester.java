@@ -146,6 +146,10 @@ public class AutomatedTester {
 		}
 	}
 
+	public void testChangePrice() {
+
+	}
+
 	public void testAll() {
 
 		testEnrollMember();
@@ -157,6 +161,8 @@ public class AutomatedTester {
 		testProcessShipment();
 
 		testCheckOut();
+
+		testChangePrice();
 
 //		UserInterface.instance().listMembers();
 //		UserInterface.instance().listProducts();
