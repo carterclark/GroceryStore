@@ -7,7 +7,6 @@ import store.facade.GroceryStore;
 import store.facade.GroceryStore.CheckOut;
 import store.facade.Request;
 import store.facade.Result;
-//import ui.UserInterface;
 
 public class AutomatedTester {
 
@@ -15,6 +14,7 @@ public class AutomatedTester {
 
 	private int memberCount = 7;
 	private int removeMemberCount = 2;
+
 	private String[] names = { "Paul", "George", "John", "Ringo", "Elton", "Madonna", "Pink" };
 	private String[] addresses = { "123 Fair Ave.", "555 Ocean Front Pkwy.", "147 W 5th St.", "10 Downing St.",
 			"1600 Pennsylvania Ave. NW", "25410 Sunset Blvd.", "211 Sandy Ridge Rd." };
@@ -146,6 +146,10 @@ public class AutomatedTester {
 		}
 	}
 
+	public void testChangePrice() {
+
+	}
+
 	public void testAll() {
 
 		testEnrollMember();
@@ -157,6 +161,8 @@ public class AutomatedTester {
 		testProcessShipment();
 
 		testCheckOut();
+
+		testChangePrice();
 
 //		UserInterface.instance().listMembers();
 //		UserInterface.instance().listProducts();
