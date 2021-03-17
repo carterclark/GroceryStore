@@ -281,6 +281,7 @@ public class UserInterface implements Serializable {
 	 */
 	public void testBed() {
 		new AutomatedTester().testAll();
+		System.out.println("Testing successful, Grocery Store updated.");
 	}
 
 	/**
@@ -311,20 +312,28 @@ public class UserInterface implements Serializable {
 	 */
 	public void removeMember() {
 		Request.instance().setMemberId(getString("\nEnter member's ID to be removed: "));
-		Result result = groceryStore.removeMember(Request.instance());
-		switch (result.getResultCode()) {
-		case Result.INVALID_MEMBER_ID:
-			System.out
-					.println("No such member with id: " + Request.instance().getMemberId() + ", at the grocery store.");
-			break;
-		case Result.ACTION_FAILED:
-			System.out.println("Member could not be removed.");
-			break;
-		case Result.ACTION_SUCCESSFUL:
-			System.out.println("Member has been removed.");
-			break;
-		default:
-			System.out.println("An error has occured.");
+		if (groceryStore.memberIdExists(Request.instance().getMemberId())) {
+			Result result = groceryStore.getMember(Request.instance().getMemberId());
+			System.out.println("You are about to remove member " + result.getMemberId() + ", " + result.getMemberName()
+					+ ", ph. number " + result.getMemberPhoneNumber() + ", from the system.");
+			if (getYesOrNo("Are you sure?")) {
+				result = groceryStore.removeMember(Request.instance());
+				switch (result.getResultCode()) {
+				case Result.ACTION_FAILED:
+					System.out.println("Member could not be removed.");
+					break;
+				case Result.ACTION_SUCCESSFUL:
+					System.out.println("Member " + result.getMemberId() + " has been removed.");
+					break;
+				default:
+					System.out.println("An error has occured.");
+				}
+			} else {
+				System.out.println("Member " + result.getMemberId() + " will not be removed.");
+			}
+		} else {
+			System.out.println("No such member with id: " + Request.instance().getMemberId().toUpperCase()
+					+ ", at the grocery store.");
 		}
 	}
 
@@ -507,7 +516,7 @@ public class UserInterface implements Serializable {
 			while (iterator.hasNext()) {
 				// print info for each result object
 				result = iterator.next();
-				System.out.printf("Product: %s, ID: %s, Price: %.2f, Stock in hand: %d, reorder level: %d\n\n",
+				System.out.printf("Product: %s, ID: %s, Price: %.2f, Stock in hand: %d, reorder level: %d\n",
 						result.getProductName(), result.getProductId(), result.getProductCurrentPrice(),
 						result.getProductStockOnHand(), result.getProductReorderLevel());
 			}
@@ -530,7 +539,7 @@ public class UserInterface implements Serializable {
 			while (iterator.hasNext()) {
 				// print info for each result object
 				result = iterator.next();
-				System.out.printf("Member: %s, Address: %s, Fee paid: %.2f, ID: %s\n\n", result.getMemberName(),
+				System.out.printf("Member: %s, Address: %s, Fee paid: %.2f, ID: %s\n", result.getMemberName(),
 						result.getMemberAddress(), result.getMemberFeePaid(), result.getMemberId());
 			}
 		}
@@ -686,11 +695,9 @@ public class UserInterface implements Serializable {
 	 * @param args N/A
 	 */
 	public static void main(String[] args) {
-		System.out.println(
-				"★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
+		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 		System.out.println("★★★ WELCOME TO OUR GROCERY STORE ★★★");
-		System.out.println(
-				"★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
+		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
 		if (getYesOrNo("Would you like to load Store data from the disk?")) {
 			load();
 		} else {

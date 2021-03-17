@@ -26,14 +26,14 @@ public class AutomatedTester {
 
 	private int productCount = 20;
 	private String[] productNames = { "Milk Whole 1qt", "Milk 2% 1gal", "Milk 2% 1qt", "Milk Skim 1gal",
-			"Milk Skim 1gal", "Bread Italian 1lb", "Bread French 1pc", "Eggs Fresh 12pcs", "Juice Orange 1gal",
+			"Milk Skim 1qt", "Bread Italian 1lb", "Bread French 1pc", "Eggs Fresh 12pcs", "Juice Orange 1gal",
 			"Juice Apple 1gal", "Water Distilled 1gal", "Water Sparkling 1l", "Cola 2l", "Cola Can 12oz",
 			"Lemon/Lime Soda 2l", "Lemon/Lime Soda Can 12oz", "Root Beer 2l", "Root Beer Can 12oz",
 			"Ice Cream Vanilla 1qt", "Ice Cream Chocolate 1qt" };
 	private String[] productIds = { "P-1", "P-2", "P-3", "P-4", "P-5", "P-6", "P-7", "P-8", "P-9", "P-10", "P-11",
 			"P-12", "P-13", "P-14", "P-15", "P-16", "P-17", "P-18", "P-19", "P-20" };
 	private int[] reorderLevel = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
-	private double[] currentPrice = { 1.99, 3.79, 1.99, 3.79, 3.79, 4.5, 3.75, 2.29, 4.99, 3.99, 0.89, 1.49, 1.89, 0.6,
+	private double[] currentPrice = { 1.99, 3.79, 1.99, 3.79, 1.99, 4.5, 3.75, 2.29, 4.99, 3.99, 0.89, 1.49, 1.89, 0.6,
 			1.89, 0.6, 1.89, 0.6, 3.97, 3.97 };
 
 	private int orderCount = 20;
@@ -139,8 +139,8 @@ public class AutomatedTester {
 			Result result = iterator.next();
 			assert result.getProductId().equalsIgnoreCase(productIds[checkedOutProductIndexes[counter]]);
 			assert result.getOrderQuantity() == reorderLevel[checkedOutProductIndexes[counter]] * 2;
-			// these order numbers start at 21; the first 20 were creating when adding new
-			// products
+			// these order numbers start at orderCount + 1; the first orderCount orders were
+			// creating when adding new products
 			assert result.getOrderId().equalsIgnoreCase("O-" + (counter + orderCount + 1));
 			counter++;
 		}
