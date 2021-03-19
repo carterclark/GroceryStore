@@ -21,6 +21,7 @@ public class Transaction implements Serializable {
 	private Calendar date;
 	private ArrayList<Item> itemsList;
 	private double totalPrice;
+	private String memberId;
 
 	/**
 	 * The constructor. At the point of creation of a transaction, the date and time
@@ -50,6 +51,14 @@ public class Transaction implements Serializable {
 
 	public double getTotalPrice() {
 		return totalPrice;
+	}
+	
+	public void setMemberId(String memberId) {
+		this.memberId = memberId;
+	}
+	
+	public String getMemberId() {
+		return memberId;
 	}
 
 	/**
