@@ -10,8 +10,6 @@ import store.entities.Member;
 import store.entities.Order;
 import store.entities.Product;
 import store.entities.Transaction;
-import store.collections.TransactionsList;
-
 /**
  * Class GroceryStore is the facade of the application. It acts as the (safe)
  * middle-man between the user interface and the business logic of the grocery
@@ -28,7 +26,6 @@ public class GroceryStore implements Serializable {
 	private MembersList membersList = new MembersList();
 	private ProductsList productsList = new ProductsList();
 	private OrdersList ordersList = new OrdersList();
-	private TransactionsList transactionsList = new TransactionsList();
 
 	// ------------------------MembersList Class---------------------------------
 	/**
@@ -377,8 +374,6 @@ public class GroceryStore implements Serializable {
 						list.add(result);
 					}
 				}
-				//add this transaction to the list of all transactions.
-				transactionsList.add(checkOut);
 				// checkout is set to null for safety reasons: nothing can be added to it - a
 				// new one has to be open
 				memberId = "";
