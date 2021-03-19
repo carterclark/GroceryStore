@@ -148,6 +148,21 @@ public class AutomatedTester {
 
 	public void testChangePrice() {
 
+		double dollar = 1.00;
+
+		for (int index = 0; index < productCount; index++) {
+			// getting id and new price
+			Request.instance().setProductId(productIds[index]);
+			Request.instance().setProductCurrentPrice(currentPrice[index] + dollar);
+
+			// changing the price and returning product info
+			Result result = groceryStore.changePrice(Request.instance());
+
+			assert result.getResultCode() == Result.ACTION_SUCCESSFUL;
+			assert result.getProductId().equalsIgnoreCase(productIds[index]);
+			assert result.getProductCurrentPrice() == currentPrice[index] + dollar;
+		}
+
 	}
 
 	public void testAll() {
