@@ -561,8 +561,7 @@ public class UserInterface implements Serializable {
 		
 		//Loop the opportunity to input member ID until valid member ID is found or the user exits.
 		do {
-			System.out.print("Input member ID: ");
-			userInput = input.nextLine().trim().toString();
+			userInput = getString("\nEnter 'END' any time to exit this option. \nInput member ID: ");
 			Iterator<Result> iterator = groceryStore.getAllMembers();
 			//Find the supposed member given by user input or exit the loop in the event of 'END'
 			if(userInput.equals("END")){
@@ -584,15 +583,14 @@ public class UserInterface implements Serializable {
 					}
 				}	
 			}
-		//Sentinel set to true when a Member ID is input that matches one existing in the database
+		//Sentinel set to true when a Member ID is input that matches one existing in the database.
 		}while(!sentinel);
 		//Now get the starting and ending dates...
 		if(!userInput.equals("END")) {
 			sentinel = false;
 			//Get starting date. Loops until a parse-able date is input or the user exits.
 			do {
-				System.out.print("Input starting date for transactions (mm/dd/yyyy format): ");
-				userInput = input.nextLine().trim().toString();
+				userInput = getString("Input starting date for transactions (mm/dd/yyyy format):");
 				//If the user entered 'END' exit the loop, else continue
 				if(userInput.equals("END")) {
 					break;
@@ -607,16 +605,13 @@ public class UserInterface implements Serializable {
 						System.out.println("Cannot parse " + userInput + " as a date. Try again or enter 'END' to exit...");
 					}
 				}
-				//this will print the starting date you just parsed:
-				//System.out.println(dateFormat.format(startingDate.getTime()));
 			}while(!sentinel);
 		}
 		//Get ending date. Loops until a parse-able date is input or the user exits.
 		if(!userInput.toString().equals("END")) {
 			sentinel = false;
 			do{
-				System.out.print("Input ending date for transactions. Must succeed starting date chronologically. (mm/dd/yyyy format): ");
-				userInput = input.nextLine().trim().toString();
+				userInput = getString("Input ending date. Ending date must succeed starting date chronologically. (mm/dd/yyyy format): ");
 				if(userInput.equals("END")) {
 					break;
 				}else {

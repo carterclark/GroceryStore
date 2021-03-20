@@ -1,5 +1,5 @@
 package store.collections;
 
-public class TransactionsList{
+public class TransactionsList {
 	
 }
