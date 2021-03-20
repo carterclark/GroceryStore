@@ -2,6 +2,7 @@ package store.facade;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 
 import store.entities.Item;
@@ -9,7 +10,6 @@ import store.entities.Member;
 import store.entities.Order;
 import store.entities.Product;
 import store.entities.Transaction;
-
 /**
  * Class GroceryStore is the facade of the application. It acts as the (safe)
  * middle-man between the user interface and the business logic of the grocery
@@ -521,6 +521,59 @@ public class GroceryStore implements Serializable {
 			Product product = iterator.next();
 			Result result = new Result();
 			result.setProductFields(product);
+			list.add(result);
+		}
+		return list.iterator();
+	}
+	
+	/**
+	 * Used by UI, get the list of all items in a transaction on record without exposing it directly.
+	 * @return iterator for list of items in a transaction
+	 */
+	public Iterator<Result> getTransactionItems(Result result) {
+		ArrayList<Result> list = new ArrayList<Result>();
+		for (Iterator<Item> iterator = result.getTransactionsItemsList(); iterator.hasNext();) {
+			Item item = iterator.next();
+			Result itemResult  = new Result();
+			itemResult.setItemFields(item);
+			list.add(itemResult);
+		}
+		return list.iterator();
+	}
+	
+	/**
+	 * Used by UI, get the list of all orders on record without exposing the back end.
+	 * 
+	 * @return iterator for list of orders
+	 */
+	public Iterator<Result> getAllOrders(){
+		ArrayList<Result> list = new ArrayList<Result>();
+		for(Iterator<Order> iterator = ordersList.iterator(); iterator.hasNext();) {
+			Order order = iterator.next();
+			Result result = new Result();
+			result.setOrderFields(order);
+			list.add(result);
+		}
+		return list.iterator();
+	}
+	
+	/**
+	 * Used by UI, get the list of all transactions for a given member between given dates.
+	 * @ return iterator for list of transactions for that member.
+	 */
+	public Iterator<Result> getMemberTransactions(Result memberResult, Calendar startingDate, Calendar endingDate){
+		Member member = null;
+		for (Iterator<Member> iterator = membersList.iterator(); iterator.hasNext();) {
+			member = iterator.next();
+			if(member.getId().equals(memberResult.getMemberId())) {
+				break;
+			}
+		}
+		ArrayList<Result> list = new ArrayList<Result>();
+		for(Iterator<Transaction> iterator = member.getTransactions(startingDate, endingDate); iterator.hasNext();) {
+			Transaction transaction = iterator.next();
+			Result result = new Result();
+			result.setTransactionFields(transaction);
 			list.add(result);
 		}
 		return list.iterator();

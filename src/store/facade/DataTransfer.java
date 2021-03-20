@@ -1,9 +1,13 @@
 package store.facade;
 
 import java.util.Calendar;
+import java.util.Iterator;
 
+import store.entities.Item;
 import store.entities.Member;
+import store.entities.Order;
 import store.entities.Product;
+import store.entities.Transaction;
 
 /**
  * Class DataTransfer is used as an engine for safe data transfer between the
@@ -29,6 +33,14 @@ public class DataTransfer {
 	private int orderQuantity;
 	private String orderId;
 	private String list;
+	boolean orderIsOutstanding;
+	Calendar dateOfOrder;
+	private Iterator<Item> itemsList;
+	private double totalPrice;
+	private Calendar transactionDate;
+	private int itemQuantity;
+	private double unitPrice;
+	private double itemPrice;
 
 	public DataTransfer() {
 		reset();
@@ -52,6 +64,56 @@ public class DataTransfer {
 		orderQuantity = 0;
 		orderId = "";
 		list = "";
+	}
+
+	
+	
+	public Calendar getTransactionDate() {
+		return transactionDate;
+	}
+
+	public void setTransactionDate(Calendar transactionDate) {
+		this.transactionDate = transactionDate;
+	}
+
+	public Iterator<Item> getItemsList() {
+		return itemsList;
+	}
+
+	public void setItemsList(Iterator<Item> itemsList) {
+		this.itemsList = itemsList;
+	}
+
+	public double getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(double totalPrice) {
+		this.totalPrice = totalPrice;
+	}
+
+	public int getItemQuantity() {
+		return itemQuantity;
+	}
+
+	public void setItemQuantity(int itemQuantity) {
+		this.itemQuantity = itemQuantity;
+	}
+
+	public double getUnitPrice() {
+		return unitPrice;
+	}
+
+	public void setUnitPrice(double unitPrice) {
+		this.unitPrice = unitPrice;
+	}
+
+	public double getItemPrice() {
+		return itemPrice;
+	}
+
+	public void setItemPrice(double itemPrice) {
+		this.itemPrice = itemPrice;
 	}
 
 	public String getMemberName() {
@@ -165,6 +227,18 @@ public class DataTransfer {
 	public void setList(String list) {
 		this.list = list;
 	}
+	
+	public boolean getIsOutstanding() {
+		return orderIsOutstanding;
+	}
+	
+	public Calendar getDateOfOrder() {
+		return dateOfOrder;
+	}
+	
+	public Iterator<Item> getTransactionsItemsList(){
+		return itemsList;
+	}
 
 	/**
 	 * Sets all member fields with supplied Member fields (to be used only by the
@@ -196,5 +270,43 @@ public class DataTransfer {
 		productCurrentPrice = product.getCurrentPrice();
 		productReorderLevel = product.getReorderLevel();
 	}
-
+	
+	/**
+	 * Sets all order fields with data from given Order object
+	 * 
+	 * @param order - the Order object to fill the data with
+	 */
+	public void setOrderFields(Order order) {
+		orderId = order.getOrderNumber();
+		productName = order.getProductName();
+		productId = order.getProductId();
+		dateOfOrder = order.getDateOfOrder();
+		orderQuantity = order.getQuantity();
+		orderIsOutstanding = order.isOutstanding();
+	}
+	
+	/**
+	 * Sets all transaction fields with data from given Transaction object
+	 * 
+	 * @param order - the Transaction object to fill the data with
+	 */
+	public void setTransactionFields(Transaction transaction) {
+		this.itemsList = transaction.getItems();
+		this.memberId = transaction.getMemberId();
+		this.totalPrice = transaction.getTotalPrice();
+		this.transactionDate = transaction.getDate();
+	}
+	
+	/**
+	*Sets all item fields with data from given item object
+	*@param item - the Item which to fill the data with
+	*/
+	public void setItemFields(Item item) {
+		this.productName = item.getName();
+		this.productId = item.getProductId();
+		this.itemQuantity = item.getQuantity();
+		this.unitPrice = item.getUnitPrice();
+		this.itemPrice = item.getItemPrice();
+	}
+	
 }
