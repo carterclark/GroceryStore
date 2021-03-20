@@ -22,8 +22,6 @@ public class Order implements Serializable {
 	// the order is outstanding until delivery when isOutstanding is set to FALSE by
 	// user
 	private boolean isOutstanding;
-	// static field necessary for generating order numbers automatically
-	private static int orderCounter = 1;
 
 	/**
 	 * The constructor. At the point of creation of an order, the date and time is
@@ -33,25 +31,25 @@ public class Order implements Serializable {
 	 * @param productId   - ID of the product being ordered
 	 * @param quantity    - quantity of the product being ordered
 	 */
-	public Order(String productName, String productId, int quantity) {
+	public Order(String productName, String productId, int quantity, int idCounter) {
 		dateOfOrder = new GregorianCalendar();
 		dateOfOrder.setTimeInMillis(System.currentTimeMillis());
 		this.productName = productName;
 		this.productId = productId;
 		this.quantity = quantity;
-		orderNumber = "O-" + orderCounter++;
+		orderNumber = "O-" + idCounter;
 		isOutstanding = true;
 	}
 
 	// for testing purposes (we may or may not need it)
-	public Order(String productName, String productId, int quantity, int month, int day, int year, int hour,
-			int minute) {
+	public Order(String productName, String productId, int quantity, int month, int day, int year, int hour, int minute,
+			int idCounter) {
 		dateOfOrder = new GregorianCalendar();
 		dateOfOrder.set(year, month - 1, day, hour, minute);
 		this.productName = productName;
 		this.productId = productId;
 		this.quantity = quantity;
-		orderNumber = "O-" + orderCounter++;
+		orderNumber = "O-" + idCounter;
 		isOutstanding = true;
 	}
 

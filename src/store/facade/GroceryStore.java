@@ -1,5 +1,9 @@
 package store.facade;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -20,12 +24,16 @@ import store.entities.Transaction;
 public class GroceryStore implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	public static final String BACKUP_FILE_NAME = "GroceryStore.dat";
 	private static GroceryStore singleton;
 	// this class builds and maintains three essential lists: membersList,
 	// productsList, and ordersList
 	private MembersList membersList = new MembersList();
 	private ProductsList productsList = new ProductsList();
 	private OrdersList ordersList = new OrdersList();
+	// static field necessary for generating member IDs automatically
+	private static int memberIdCounter = 1;
+	private static int orderIdCounter = 1;
 
 	// ------------------------MembersList Class---------------------------------
 	/**
@@ -412,8 +420,9 @@ public class GroceryStore implements Serializable {
 		String memberId = "";
 		// member is added to membersList using MembersList method and request's member
 		// fields
-		memberId = membersList.add(new Member(request.getMemberName(), request.getMemberAddress(),
-				request.getMemberPhoneNumber(), request.getMemberDateJoined(), request.getMemberFeePaid()));
+		memberId = membersList
+				.add(new Member(request.getMemberName(), request.getMemberAddress(), request.getMemberPhoneNumber(),
+						request.getMemberDateJoined(), request.getMemberFeePaid(), memberIdCounter++));
 		// result is filled with relevant information (member ID and result code)
 		result.setMemberFields(membersList.searchById(memberId));
 		if (!memberId.equalsIgnoreCase("")) {
@@ -563,7 +572,8 @@ public class GroceryStore implements Serializable {
 		Result result = new Result();
 		// result field orderId (that needs to be returned) is set in a one-step process
 		// along with the creation of a new order
-		result.setOrderId(ordersList.add(new Order(product.getName(), product.getId(), product.getReorderLevel() * 2)));
+		result.setOrderId(ordersList
+				.add(new Order(product.getName(), product.getId(), product.getReorderLevel() * 2, orderIdCounter++)));
 		// next if clause is carried out if the placing of the order was unsuccessful
 		if (result.getOrderId().equals("")) {
 			result.setResultCode(Result.ACTION_FAILED);
@@ -712,6 +722,57 @@ public class GroceryStore implements Serializable {
 		}
 
 		return result.iterator();
+	}
+
+	/**
+	 * Saves the GroceryStore object to file BACKUP_FILE_NAME in current directory,
+	 * including static fields memberIdCounter and orderIdCounter.
+	 * 
+	 * @param groceryStore - GroceryStore object being saved.
+	 * @return TRUE if file was successfully saved, FALSE otherwise
+	 * @throws Exception for any problems opening or writing the file throws an
+	 *                   Exception and returns FALSE
+	 */
+	public static boolean save(GroceryStore groceryStore) throws Exception {
+		try {
+			FileOutputStream file = new FileOutputStream(BACKUP_FILE_NAME);
+			ObjectOutputStream object = new ObjectOutputStream(file);
+			object.writeObject(groceryStore);
+			object.writeObject(memberIdCounter);
+			object.writeObject(orderIdCounter);
+			object.close();
+			return true;
+		} catch (Exception exception) {
+			return false;
+		}
+	}
+
+	/**
+	 * Loads the GroceryStore object from the backup file BACKUP_FILE_NAME residing
+	 * in current directory, including static fields memberIdCounter and
+	 * orderIdCounter.
+	 * 
+	 * @return GroceryStore OBJECT: from the backup, if such existed and was
+	 *         readable, OR from memory, if the object had already existed; returns
+	 *         NULL, if the object was not found in memory, AND was not found or
+	 *         readable on disk
+	 * @throws Exception for any problems opening or reading the file throws an
+	 *                   Exception and returns NULL
+	 */
+	public static GroceryStore load() throws Exception {
+		try {
+			FileInputStream file = new FileInputStream(BACKUP_FILE_NAME);
+			ObjectInputStream object = new ObjectInputStream(file);
+			if (singleton == null) {
+				singleton = (GroceryStore) object.readObject();
+				memberIdCounter = (int) object.readObject();
+				orderIdCounter = (int) object.readObject();
+			}
+			object.close();
+			return singleton;
+		} catch (Exception exception) {
+			return null;
+		}
 	}
 
 }
