@@ -7,7 +7,6 @@ import store.facade.GroceryStore;
 import store.facade.GroceryStore.CheckOut;
 import store.facade.Request;
 import store.facade.Result;
-//import ui.UserInterface;
 
 public class AutomatedTester {
 
@@ -15,6 +14,7 @@ public class AutomatedTester {
 
 	private int memberCount = 7;
 	private int removeMemberCount = 2;
+
 	private String[] names = { "Paul", "George", "John", "Ringo", "Elton", "Madonna", "Pink" };
 	private String[] addresses = { "123 Fair Ave.", "555 Ocean Front Pkwy.", "147 W 5th St.", "10 Downing St.",
 			"1600 Pennsylvania Ave. NW", "25410 Sunset Blvd.", "211 Sandy Ridge Rd." };
@@ -146,6 +146,25 @@ public class AutomatedTester {
 		}
 	}
 
+	public void testChangePrice() {
+
+		double dollar = 1.00;
+
+		for (int index = 0; index < productCount; index++) {
+			// getting id and new price
+			Request.instance().setProductId(productIds[index]);
+			Request.instance().setProductCurrentPrice(currentPrice[index] + dollar);
+
+			// changing the price and returning product info
+			Result result = groceryStore.changePrice(Request.instance());
+
+			assert result.getResultCode() == Result.ACTION_SUCCESSFUL;
+			assert result.getProductId().equalsIgnoreCase(productIds[index]);
+			assert result.getProductCurrentPrice() == currentPrice[index] + dollar;
+		}
+
+	}
+
 	public void testAll() {
 
 		testEnrollMember();
@@ -157,6 +176,8 @@ public class AutomatedTester {
 		testProcessShipment();
 
 		testCheckOut();
+
+		testChangePrice();
 
 //		UserInterface.instance().listMembers();
 //		UserInterface.instance().listProducts();
