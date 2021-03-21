@@ -22,9 +22,6 @@ public class Member implements Serializable {
 	private String id;
 	private ArrayList<Transaction> transactions;
 
-	// static field necessary for generating member IDs automatically
-	private static int idCounter = 1;
-
 	/**
 	 * The constructor. At the time of creation of a member object a list of his/her
 	 * transactions (checkouts) is created as well.
@@ -37,13 +34,13 @@ public class Member implements Serializable {
 	 *                    today's date to the member; the date is assigned by user
 	 * @param feePaid     - membership fee the new member paid
 	 */
-	public Member(String name, String address, String phoneNumber, Calendar dateJoined, double feePaid) {
+	public Member(String name, String address, String phoneNumber, Calendar dateJoined, double feePaid, int idCounter) {
 		this.name = name;
 		this.address = address;
 		this.phoneNumber = phoneNumber;
 		this.dateJoined = dateJoined;
 		this.feePaid = feePaid;
-		this.id = "M-" + idCounter++;
+		this.id = "M-" + idCounter;
 		transactions = new ArrayList<Transaction>();
 	}
 
