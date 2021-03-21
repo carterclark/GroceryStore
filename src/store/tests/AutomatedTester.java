@@ -179,6 +179,8 @@ public class AutomatedTester {
 
 		testChangePrice();
 
+		System.out.println("Automated testing was successful!");
+
 //		UserInterface.instance().listMembers();
 //		UserInterface.instance().listProducts();
 	}
@@ -186,8 +188,6 @@ public class AutomatedTester {
 	public static void main(String[] args) {
 
 		new AutomatedTester().testAll();
-
-		System.out.println("Automated testing was successful!");
 
 	}
 
