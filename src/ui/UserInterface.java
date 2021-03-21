@@ -268,13 +268,32 @@ public class UserInterface implements Serializable {
 	/**
 	 * Retrieves the grocery store data from the disk.
 	 */
-	public static void load() {
+	public static boolean load() throws Exception {
+		if (singleton == null) {
+			groceryStore = GroceryStore.load();
+			if (groceryStore == null) {
+				System.out.println("No '" + GroceryStore.BACKUP_FILE_NAME
+						+ "' present in your current\nworking folder or the file is unreadable.");
+				return false;
+			}
+			instance();
+			return true;
+		} else {
+			System.out.println("Grocery Store data are already in place and cannot be overwritten.\n"
+					+ "If you want to load the data from the disk,\nchoose that option at the start of the program.");
+			return false;
+		}
 	}
 
 	/**
 	 * Saves the grocery data to the disk.
 	 */
-	public void save() {
+	public void save() throws Exception {
+		if (GroceryStore.save(groceryStore)) {
+			System.out.println(
+					"The Grocery Store data have been saved to a file '" + GroceryStore.BACKUP_FILE_NAME + "'.");
+		} else
+			System.out.println("Data could not be saved.");
 	}
 
 	/**
@@ -792,7 +811,7 @@ public class UserInterface implements Serializable {
 	/**
 	 * Performs the main looping around the commands being issued by the user.
 	 */
-	public void loop() {
+	public void loop() throws Exception {
 		int action;
 		help();
 		do {
@@ -857,13 +876,17 @@ public class UserInterface implements Serializable {
 	 * 
 	 * @param args N/A
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
+		boolean loaded = false;
+		boolean wantsToLoad = false;
 		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 		System.out.println("★★★ WELCOME TO OUR GROCERY STORE ★★★");
 		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
-		if (getYesOrNo("Would you like to load Store data from the disk?")) {
-			load();
-		} else {
+		wantsToLoad = getYesOrNo("Would you like to load Store data from the disk?");
+		if (wantsToLoad) {
+			loaded = load();
+		}
+		if (!loaded || !wantsToLoad) {
 			instance();
 			System.out.println();
 			if (getYesOrNo("Do you wish to generate a test bed and\ninvoke the functionality using asserts?")) {
