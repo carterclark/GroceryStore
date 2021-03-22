@@ -569,7 +569,7 @@ public class UserInterface implements Serializable {
 			}else {
 				for(Iterator<Result> counter = iterator; counter.hasNext();) {
 					Result result = counter.next();
-					if(result.getMemberId().equals(userInput)) {
+					if(result.getMemberId().equalsIgnoreCase(userInput)) {
 						memberId = userInput;
 						member = result;
 						System.out.println("Member found.");
@@ -611,7 +611,7 @@ public class UserInterface implements Serializable {
 		if(!userInput.toString().equals("END")) {
 			sentinel = false;
 			do{
-				userInput = getString("Input ending date. Ending date must succeed starting date chronologically. (mm/dd/yyyy format): ");
+				userInput = getString("Input ending date. Ending date must not precede starting date chronologically. (mm/dd/yyyy format): ");
 				if(userInput.equals("END")) {
 					break;
 				}else {
@@ -619,11 +619,11 @@ public class UserInterface implements Serializable {
 					try {
 						endingDate.setTime(dateFormat.parse(userInput));
 						//Check if the ending date is actually after the starting date.
-						if(endingDate.after(startingDate)) {
+						if(!endingDate.before(startingDate)) {
 							sentinel = true;
 							break;
 						}else {
-							System.out.println("Error: Ending date does not succeed starting date chronologically. Try again.");
+							System.out.println("Error: Ending date precedes starting date chronologically. Try again.");
 						}
 						
 					} catch (Exception e) {
