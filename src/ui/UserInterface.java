@@ -564,7 +564,7 @@ public class UserInterface implements Serializable {
 			userInput = getString("\nEnter 'END' any time to exit this option. \nInput member ID: ");
 			Iterator<Result> iterator = groceryStore.getAllMembers();
 			//Find the supposed member given by user input or exit the loop in the event of 'END'
-			if(userInput.equals("END")){
+			if(userInput.equalsIgnoreCase("END")){
 				break;
 			}else {
 				for(Iterator<Result> counter = iterator; counter.hasNext();) {
@@ -586,13 +586,13 @@ public class UserInterface implements Serializable {
 		//Sentinel set to true when a Member ID is input that matches one existing in the database.
 		}while(!sentinel);
 		//Now get the starting and ending dates...
-		if(!userInput.equals("END")) {
+		if(!userInput.equalsIgnoreCase("END")) {
 			sentinel = false;
 			//Get starting date. Loops until a parse-able date is input or the user exits.
 			do {
 				userInput = getString("Input starting date for transactions (mm/dd/yyyy format):");
 				//If the user entered 'END' exit the loop, else continue
-				if(userInput.equals("END")) {
+				if(userInput.equalsIgnoreCase("END")) {
 					break;
 				}else {
 					//Try to parse user input as a Calendar object in the given format
@@ -608,11 +608,11 @@ public class UserInterface implements Serializable {
 			}while(!sentinel);
 		}
 		//Get ending date. Loops until a parse-able date is input or the user exits.
-		if(!userInput.toString().equals("END")) {
+		if(!userInput.toString().equalsIgnoreCase("END")) {
 			sentinel = false;
 			do{
 				userInput = getString("Input ending date. Ending date must not precede starting date chronologically. (mm/dd/yyyy format): ");
-				if(userInput.equals("END")) {
+				if(userInput.equalsIgnoreCase("END")) {
 					break;
 				}else {
 					//Try to parse user input as a Calendar object in the given format
