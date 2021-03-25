@@ -300,8 +300,9 @@ public class UserInterface implements Serializable {
 	 * Runs a test bed with predetermined sets of data applied on the grocery store.
 	 */
 	public void testBed() {
+
 		new AutomatedTester().testAll();
-		System.out.println("Testing successful, Grocery Store updated.");
+		System.out.println("Grocery Store updated.");
 	}
 
 	/**
@@ -566,8 +567,8 @@ public class UserInterface implements Serializable {
 	}
 
 	/**
-	 * Takes from the user a member ID, a starting date, an ending date
-	 * and finds all transactions with given member ID between given dates.
+	 * Takes from the user a member ID, a starting date, an ending date and finds
+	 * all transactions with given member ID between given dates.
 	 */
 	public void printTransactions() {
 		boolean sentinel = false;
@@ -577,121 +578,144 @@ public class UserInterface implements Serializable {
 		Calendar startingDate = Calendar.getInstance();
 		Calendar endingDate = Calendar.getInstance();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-		
-		//Loop the opportunity to input member ID until valid member ID is found or the user exits.
+
+		// Loop the opportunity to input member ID until valid member ID is found or the
+		// user exits.
 		do {
 			userInput = getString("\nEnter 'END' any time to exit this option. \nInput member ID: ");
 			Iterator<Result> iterator = groceryStore.getAllMembers();
-			//Find the supposed member given by user input or exit the loop in the event of 'END'
-			if(userInput.equalsIgnoreCase("END")){
+
+			// Find the supposed member given by user input or exit the loop in the event of
+			// 'END'
+			if (userInput.equalsIgnoreCase("END")) {
+
 				break;
-			}else {
-				for(Iterator<Result> counter = iterator; counter.hasNext();) {
+			} else {
+				for (Iterator<Result> counter = iterator; counter.hasNext();) {
 					Result result = counter.next();
-					if(result.getMemberId().equalsIgnoreCase(userInput)) {
+
+					if (result.getMemberId().equalsIgnoreCase(userInput)) {
+
 						memberId = userInput;
 						member = result;
 						System.out.println("Member found.");
-						//We found a member matching user input, so stop looking for others.
+						// We found a member matching user input, so stop looking for others.
 						sentinel = true;
 						break;
 					}
-					if(!counter.hasNext()) {
-						//If you've managed to get here, there's no matching member.
-						System.out.println("No member with ID " + userInput + " found. Try again or enter 'END' to exit...");
+					if (!counter.hasNext()) {
+						// If you've managed to get here, there's no matching member.
+						System.out.println(
+								"No member with ID " + userInput + " found. Try again or enter 'END' to exit...");
 					}
-				}	
+				}
 			}
-		//Sentinel set to true when a Member ID is input that matches one existing in the database.
-		}while(!sentinel);
-		//Now get the starting and ending dates...
-		if(!userInput.equalsIgnoreCase("END")) {
+
+			// Sentinel set to true when a Member ID is input that matches one existing in
+			// the database.
+		} while (!sentinel);
+		// Now get the starting and ending dates...
+		if (!userInput.equalsIgnoreCase("END")) {
+
 			sentinel = false;
-			//Get starting date. Loops until a parse-able date is input or the user exits.
+			// Get starting date. Loops until a parse-able date is input or the user exits.
 			do {
 				userInput = getString("Input starting date for transactions (mm/dd/yyyy format):");
-				//If the user entered 'END' exit the loop, else continue
-				if(userInput.equalsIgnoreCase("END")) {
+
+				// If the user entered 'END' exit the loop, else continue
+				if (userInput.equalsIgnoreCase("END")) {
+
 					break;
-				}else {
-					//Try to parse user input as a Calendar object in the given format
+				} else {
+					// Try to parse user input as a Calendar object in the given format
 					try {
 						startingDate.setTime(dateFormat.parse(userInput));
-						//If you made it here, you input a parse-able date and can exit the loop.
+						// If you made it here, you input a parse-able date and can exit the loop.
 						sentinel = true;
 						break;
 					} catch (Exception e) {
-						System.out.println("Cannot parse " + userInput + " as a date. Try again or enter 'END' to exit...");
+						System.out.println(
+								"Cannot parse " + userInput + " as a date. Try again or enter 'END' to exit...");
 					}
 				}
-			}while(!sentinel);
+			} while (!sentinel);
 		}
-		//Get ending date. Loops until a parse-able date is input or the user exits.
-		if(!userInput.toString().equalsIgnoreCase("END")) {
+
+		// Get ending date. Loops until a parse-able date is input or the user exits.
+		if (!userInput.toString().equalsIgnoreCase("END")) {
 			sentinel = false;
-			do{
-				userInput = getString("Input ending date. Ending date must not precede starting date chronologically. (mm/dd/yyyy format): ");
-				if(userInput.equalsIgnoreCase("END")) {
+			do {
+				userInput = getString(
+						"Input ending date. Ending date must not precede starting date chronologically. (mm/dd/yyyy format): ");
+				if (userInput.equalsIgnoreCase("END")) {
+
 					break;
-				}else {
-					//Try to parse user input as a Calendar object in the given format
+				} else {
+					// Try to parse user input as a Calendar object in the given format
 					try {
 						endingDate.setTime(dateFormat.parse(userInput));
-						//Check if the ending date is actually after the starting date.
-						if(!endingDate.before(startingDate)) {
+
+						// Check if the ending date is actually after the starting date.
+						if (!endingDate.before(startingDate)) {
 							sentinel = true;
 							break;
-						}else {
+						} else {
 							System.out.println("Error: Ending date precedes starting date chronologically. Try again.");
+
 						}
-						
+
 					} catch (Exception e) {
-						System.out.println("Cannot parse " + userInput + " as a date. Try again or enter 'END' to exit...");
+						System.out.println(
+								"Cannot parse " + userInput + " as a date. Try again or enter 'END' to exit...");
 					}
 				}
-			}while(!sentinel);
+			} while (!sentinel);
 		}
 		int matchesCount = 0;
-		//Now find matching transactions for the given user input
-		if(!userInput.toString().equals("END") && sentinel) {
-			System.out.println("\nTransactions for member ID " + memberId + " bewteen " + dateFormat.format(startingDate.getTime()) 
-								+ " and " + dateFormat.format(endingDate.getTime()) + ":");
-			
+		// Now find matching transactions for the given user input
+		if (!userInput.toString().equals("END") && sentinel) {
+			System.out.println(
+					"\nTransactions for member ID " + memberId + " bewteen " + dateFormat.format(startingDate.getTime())
+							+ " and " + dateFormat.format(endingDate.getTime()) + ":");
+
 			Iterator<Result> iterator = groceryStore.getMemberTransactions(member, startingDate, endingDate);
 			if (iterator.hasNext()) {
-				for(Iterator<Result> counter = iterator; counter.hasNext();) {
+				for (Iterator<Result> counter = iterator; counter.hasNext();) {
 					Result result = counter.next();
 					matchesCount++;
 					System.out.println("-".repeat(66) + "\n" + "-".repeat(66));
 					System.out.println("Transaction " + matchesCount);
 					System.out.println("-".repeat(13));
-					System.out.println("Date: " + String.format(dateFormat.format(result.getTransactionDate().getTime())) + "\n" + 
-										String.format("%-25s", "Product") + "  " + String.format("%-13s", "Quantity") + "  "+ String.format("%-13s", "Price"));
+					System.out
+							.println("Date: " + String.format(dateFormat.format(result.getTransactionDate().getTime()))
+									+ "\n" + String.format("%-25s", "Product") + "  "
+									+ String.format("%-13s", "Quantity") + "  " + String.format("%-13s", "Price"));
 					Iterator<Result> itemIterator = groceryStore.getTransactionItems(result);
-					if(itemIterator.hasNext()) {
-						for(Iterator<Result> itemCounter = itemIterator; itemCounter.hasNext();) {
+					if (itemIterator.hasNext()) {
+						for (Iterator<Result> itemCounter = itemIterator; itemCounter.hasNext();) {
 							Result itemResult = itemCounter.next();
-							System.out.println(String.format("%-27s", itemResult.getProductName())+ String.format("%-15s", itemResult.getItemQuantity()) +
-												String.format("$%.2f%-13s", itemResult.getItemPrice(), ""));
+							System.out.println(String.format("%-27s", itemResult.getProductName())
+									+ String.format("%-15s", itemResult.getItemQuantity())
+									+ String.format("$%.2f%-13s", itemResult.getItemPrice(), ""));
 						}
-					}else {
+					} else {
 						System.out.println("This transaction has no items.");
 					}
 					String fittedName;
-					//Fix product name string if too long to display otherwise
+					// Fix product name string if too long to display otherwise
 					if (result.getProductName().length() > 25) {
 						fittedName = result.getProductName().substring(0, 25);
 					} else {
 						fittedName = result.getProductName();
 					}
 					System.out.println(String.format(String.format("%-25s", fittedName)));
-					System.out.println(String.format("Total: $%.2f", result.getTotalPrice())); 
+					System.out.println(String.format("Total: $%.2f", result.getTotalPrice()));
 				}
-				if(matchesCount == 0) {
+				if (matchesCount == 0) {
 					System.out.println("No matching transactions found.");
 				}
 				System.out.println("-".repeat(66) + "\n" + "-".repeat(66));
-			}else {
+			} else {
 				System.out.println("No transactions found in database");
 			}
 		}
@@ -703,31 +727,30 @@ public class UserInterface implements Serializable {
 	 */
 	public void listOutstandingOrders() {
 		Iterator<Result> iterator = groceryStore.getAllOrders();
-		if(iterator.hasNext()) {
-			System.out.println("\n" + String.format("%-10s", "Order") + "  "
-					+ String.format("%-28s", "Product Name") + "  " + String.format("%-17s", "Product ID") + "  "
-					+ String.format("%-35s", "Date of Order") + "  " + String.format("%-13s", "Quantity"));
+		if (iterator.hasNext()) {
+			System.out.println("\n" + String.format("%-10s", "Order") + "  " + String.format("%-28s", "Product Name")
+					+ "  " + String.format("%-17s", "Product ID") + "  " + String.format("%-35s", "Date of Order")
+					+ "  " + String.format("%-13s", "Quantity"));
 			System.out.println("-".repeat(106));
-			for(Iterator<Result> counter = iterator; counter.hasNext();) {
+			for (Iterator<Result> counter = iterator; counter.hasNext();) {
 				Result result = counter.next();
-				//If the order's isOutstanding is True, print it's details
-				if(result.getIsOutstanding()) {
+				// If the order's isOutstanding is True, print it's details
+				if (result.getIsOutstanding()) {
 					result.getOrderId();
 					String fittedName;
-					//Fix product name string if too long to display otherwise
+					// Fix product name string if too long to display otherwise
 					if (result.getProductName().length() > 25) {
 						fittedName = result.getProductName().substring(0, 25);
 					} else {
 						fittedName = result.getProductName();
 					}
-					System.out.println(
-							String.format("%-10s", result.getOrderId()) + "  " + String.format("%-25s", fittedName) + "  "
-									+ String.format("%13s", result.getProductId()) + "  "
-									+ String.format("%35s", result.getDateOfOrder().getTime().toString()) + "  "
-									+ String.format("%13s", result.getOrderQuantity()));
-				}	
+					System.out.println(String.format("%-10s", result.getOrderId()) + "  "
+							+ String.format("%-25s", fittedName) + "  " + String.format("%13s", result.getProductId())
+							+ "  " + String.format("%35s", result.getDateOfOrder().getTime().toString()) + "  "
+							+ String.format("%13s", result.getOrderQuantity()));
+				}
 			}
-		}else {
+		} else {
 			// in case the order database is empty
 			System.out.println("No orders in the database.");
 		}
@@ -879,9 +902,11 @@ public class UserInterface implements Serializable {
 	public static void main(String[] args) throws Exception {
 		boolean loaded = false;
 		boolean wantsToLoad = false;
-		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
+		System.out.println(
+				"★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 		System.out.println("★★★ WELCOME TO OUR GROCERY STORE ★★★");
-		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
+		System.out.println(
+				"★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
 		wantsToLoad = getYesOrNo("Would you like to load Store data from the disk?");
 		if (wantsToLoad) {
 			loaded = load();
