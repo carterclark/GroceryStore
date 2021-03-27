@@ -32,9 +32,8 @@ public class DataTransfer {
 	private int productReorderLevel;
 	private int orderQuantity;
 	private String orderId;
-	private String list;
-	boolean orderIsOutstanding;
-	Calendar dateOfOrder;
+	private boolean orderIsOutstanding;
+	private Calendar dateOfOrder;
 	private Iterator<Item> itemsList;
 	private double totalPrice;
 	private Calendar transactionDate;
@@ -63,11 +62,16 @@ public class DataTransfer {
 		productReorderLevel = 0;
 		orderQuantity = 0;
 		orderId = "";
-		list = "";
+		orderIsOutstanding = false;
+		dateOfOrder = null;
+		itemsList = null;
+		totalPrice = 0.0;
+		transactionDate = null;
+		itemQuantity = 0;
+		unitPrice = 0.0;
+		itemPrice = 0.0;
 	}
 
-	
-	
 	public Calendar getTransactionDate() {
 		return transactionDate;
 	}
@@ -220,23 +224,15 @@ public class DataTransfer {
 		this.orderId = orderId;
 	}
 
-	public String getList() {
-		return list;
-	}
-
-	public void setList(String list) {
-		this.list = list;
-	}
-	
 	public boolean getIsOutstanding() {
 		return orderIsOutstanding;
 	}
-	
+
 	public Calendar getDateOfOrder() {
 		return dateOfOrder;
 	}
-	
-	public Iterator<Item> getTransactionsItemsList(){
+
+	public Iterator<Item> getTransactionsItemsList() {
 		return itemsList;
 	}
 
@@ -270,7 +266,7 @@ public class DataTransfer {
 		productCurrentPrice = product.getCurrentPrice();
 		productReorderLevel = product.getReorderLevel();
 	}
-	
+
 	/**
 	 * Sets all order fields with data from given Order object
 	 * 
@@ -284,7 +280,7 @@ public class DataTransfer {
 		orderQuantity = order.getQuantity();
 		orderIsOutstanding = order.isOutstanding();
 	}
-	
+
 	/**
 	 * Sets all transaction fields with data from given Transaction object
 	 * 
@@ -296,11 +292,12 @@ public class DataTransfer {
 		this.totalPrice = transaction.getTotalPrice();
 		this.transactionDate = transaction.getDate();
 	}
-	
+
 	/**
-	*Sets all item fields with data from given item object
-	*@param item - the Item which to fill the data with
-	*/
+	 * Sets all item fields with data from given item object
+	 * 
+	 * @param item - the Item which to fill the data with
+	 */
 	public void setItemFields(Item item) {
 		this.productName = item.getName();
 		this.productId = item.getProductId();
@@ -308,5 +305,5 @@ public class DataTransfer {
 		this.unitPrice = item.getUnitPrice();
 		this.itemPrice = item.getItemPrice();
 	}
-	
+
 }
