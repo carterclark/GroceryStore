@@ -175,45 +175,6 @@ public class UserInterface implements Serializable {
 	}
 
 	/**
-	 * Collects a date input from the user. Requires an input in format MMDDYYYY.
-	 * 
-	 * @param prompt       - a custom message prompting for a date input
-	 * @param errorMessage - a custom error message in case of invalid input
-	 * @return date entered by user (type Calendar)
-	 */
-	public static Calendar getDate(String prompt, String errorMessage) {
-		String read = "";
-		boolean error = true;
-		Calendar date = new GregorianCalendar();
-		int month = 0;
-		int day = 0;
-		int year = 0;
-		while (error) {
-			error = false;
-			read = getString(prompt + " (MMDDYYYY) ");
-			if (read.length() < 8) {
-				error = true;
-			} else {
-				try {
-					month = Integer.parseInt(read.substring(0, 2));
-					day = Integer.parseInt(read.substring(2, 4));
-					year = Integer.parseInt(read.substring(4, 8));
-				} catch (Exception exception) {
-					error = true;
-				}
-			}
-			if (month < 1 || month > 12 || day < 1 || day > 31 || year < 1800) {
-				error = true;
-			}
-			if (error) {
-				System.out.println(errorMessage);
-			}
-		}
-		date.set(year, month - 1, day);
-		return date;
-	}
-
-	/**
 	 * Collects a yes-or-no input from the user. If the first letter of the response
 	 * (trimmed of the leading and trailing spaces) is "Y" or "N" (case
 	 * NON-sensitive) it will return corresponding answer.
@@ -391,7 +352,7 @@ public class UserInterface implements Serializable {
 	}
 
 	/**
-	 * Performs a member's checkout. ("Buying items".)
+	 * Performs a member's checkout. (A member buys items from the grocery store.)
 	 */
 	public void checkOut() {
 		String memberId = getString("\nEnter member's ID (M-<number>): ");
@@ -437,10 +398,10 @@ public class UserInterface implements Serializable {
 			if (getYesOrNo("Transaction confirmed by collecting cash?")) {
 				System.out.println("Checkout successful. We thank you.");
 				// performing checkout close, which adds a transaction ( = checkout) to member's
-				// history and reorders product(s) which got low in supply if necessary;
+				// history and reorders product(s) which got low in supply, if necessary;
 				// returned is an iterator over a list of products (stored in a list of results
-				// for safety) that were reordered (to display) - if the list is empty no
-				// product had to be reordered
+				// for safety) that were reordered - if the list is empty no product had to be
+				// reordered
 				Iterator<Result> iterator = checkOut.closeCheckOut();
 				if (iterator.hasNext()) {
 					System.out.println();
@@ -523,8 +484,8 @@ public class UserInterface implements Serializable {
 	}
 
 	/**
-	 * Lists all products that start with a given name and displays their name, id,
-	 * price, stock in hand, and reorder level.
+	 * Lists all products that start with a given string and displays their name,
+	 * id, price, stock in hand, and reorder level.
 	 */
 	public void getProductInfo() {
 		String name = getString("Enter product's name: ");
@@ -545,7 +506,7 @@ public class UserInterface implements Serializable {
 	}
 
 	/**
-	 * Lists all members that start with a given name and displays their address,
+	 * Lists all members that start with a given string and displays their address,
 	 * fee paid, and id
 	 */
 	public void getMemberInfo() {
@@ -701,14 +662,8 @@ public class UserInterface implements Serializable {
 					} else {
 						System.out.println("This transaction has no items.");
 					}
-					String fittedName;
-					// Fix product name string if too long to display otherwise
-					if (result.getProductName().length() > 25) {
-						fittedName = result.getProductName().substring(0, 25);
-					} else {
-						fittedName = result.getProductName();
-					}
-					System.out.println(String.format(String.format("%-25s", fittedName)));
+					System.out
+							.println(String.format(String.format("%-25s", fittedString(result.getProductName(), 25))));
 					System.out.println(String.format("Total: $%.2f", result.getTotalPrice()));
 				}
 				if (matchesCount == 0) {
@@ -719,6 +674,24 @@ public class UserInterface implements Serializable {
 				System.out.println("No transactions found in database");
 			}
 		}
+	}
+
+	/**
+	 * A helper method which trims a String to a given maximum length. If the given
+	 * String is shorter it's returned unchanged. Useful for formatted printing into
+	 * tables.
+	 * 
+	 * @param input     - String being trimmed
+	 * @param maxLength - the max length of the returned String
+	 * @return the String with the end properly trimmed to a certain length
+	 */
+	private String fittedString(String input, int maxLength) {
+		if (input.length() > maxLength) {
+			return input.substring(0, maxLength);
+		} else {
+			return input;
+		}
+
 	}
 
 	/**
@@ -734,19 +707,12 @@ public class UserInterface implements Serializable {
 			System.out.println("-".repeat(106));
 			for (Iterator<Result> counter = iterator; counter.hasNext();) {
 				Result result = counter.next();
-				// If the order's isOutstanding is True, print it's details
+				// If the order's isOutstanding is True, print its details
 				if (result.getIsOutstanding()) {
-					result.getOrderId();
-					String fittedName;
-					// Fix product name string if too long to display otherwise
-					if (result.getProductName().length() > 25) {
-						fittedName = result.getProductName().substring(0, 25);
-					} else {
-						fittedName = result.getProductName();
-					}
 					System.out.println(String.format("%-10s", result.getOrderId()) + "  "
-							+ String.format("%-25s", fittedName) + "  " + String.format("%13s", result.getProductId())
-							+ "  " + String.format("%35s", result.getDateOfOrder().getTime().toString()) + "  "
+							+ String.format("%-25s", fittedString(result.getProductName(), 25)) + "  "
+							+ String.format("%13s", result.getProductId()) + "  "
+							+ String.format("%35s", result.getDateOfOrder().getTime().toString()) + "  "
 							+ String.format("%13s", result.getOrderQuantity()));
 				}
 			}
@@ -773,21 +739,9 @@ public class UserInterface implements Serializable {
 			// for loop prints all members
 			for (Iterator<Result> counter = iterator; counter.hasNext();) {
 				Result result = counter.next();
-				// fields fittedName and fittedAddress store trimmed off versions of name and
-				// address to fit in the table in case they're too long
-				String fittedName, fittedAddress;
-				if (result.getMemberName().length() > 23) {
-					fittedName = result.getMemberName().substring(0, 23);
-				} else {
-					fittedName = result.getMemberName();
-				}
-				if (result.getMemberAddress().length() > 28) {
-					fittedAddress = result.getMemberAddress().substring(0, 28);
-				} else {
-					fittedAddress = result.getMemberAddress();
-				}
 				System.out.println(String.format("%-9s", result.getMemberId()) + "  "
-						+ String.format("%-23s", fittedName) + "  " + String.format("%-28s", fittedAddress) + "  "
+						+ String.format("%-23s", fittedString(result.getMemberName(), 23)) + "  "
+						+ String.format("%-28s", fittedString(result.getMemberAddress(), 28)) + "  "
 						+ String.format("%-11s", result.getMemberPhoneNumber()) + "  "
 						+ String.format("%1$tm/%1$td/%1$tY", result.getMemberDateJoined()));
 			}
@@ -811,19 +765,11 @@ public class UserInterface implements Serializable {
 			// for loop prints all products
 			for (Iterator<Result> counter = iterator; counter.hasNext();) {
 				Result result = counter.next();
-				// field fittedName stores trimmed off version of product name to fit in the
-				// table in case it's too long
-				String fittedName;
-				if (result.getProductName().length() > 25) {
-					fittedName = result.getProductName().substring(0, 25);
-				} else {
-					fittedName = result.getProductName();
-				}
-				System.out.println(
-						String.format("%-10s", result.getProductId()) + "  " + String.format("%-25s", fittedName) + "  "
-								+ String.format("%13.2f", result.getProductCurrentPrice()) + "  "
-								+ String.format("%13s", result.getProductStockOnHand()) + "  "
-								+ String.format("%13s", result.getProductReorderLevel()));
+				System.out.println(String.format("%-10s", result.getProductId()) + "  "
+						+ String.format("%-25s", fittedString(result.getProductName(), 25)) + "  "
+						+ String.format("%13.2f", result.getProductCurrentPrice()) + "  "
+						+ String.format("%13s", result.getProductStockOnHand()) + "  "
+						+ String.format("%13s", result.getProductReorderLevel()));
 			}
 		} else {
 			// in case the product database is empty
@@ -889,7 +835,7 @@ public class UserInterface implements Serializable {
 				System.out.println("Not a valid option number.");
 				break;
 			}
-		} while (action != 0);
+		} while (action != EXIT);
 	}
 
 	/**
@@ -902,11 +848,9 @@ public class UserInterface implements Serializable {
 	public static void main(String[] args) throws Exception {
 		boolean loaded = false;
 		boolean wantsToLoad = false;
-		System.out.println(
-				"★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
+		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 		System.out.println("★★★ WELCOME TO OUR GROCERY STORE ★★★");
-		System.out.println(
-				"★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
+		System.out.println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★\n");
 		wantsToLoad = getYesOrNo("Would you like to load Store data from the disk?");
 		if (wantsToLoad) {
 			loaded = load();
