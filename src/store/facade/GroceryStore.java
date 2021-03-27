@@ -207,22 +207,6 @@ public class GroceryStore implements Serializable {
 		}
 
 		/**
-		 * Gets a list of outstanding (not yet fulfilled) orders.
-		 * 
-		 * @return an iterator to the list of outstanding orders
-		 */
-		public Iterator<Order> outstanding() {
-			ArrayList<Order> output = new ArrayList<Order>();
-			for (Iterator<Order> iterator = orders.iterator(); iterator.hasNext();) {
-				Order order = iterator.next();
-				if (order.isOutstanding()) {
-					output.add(order);
-				}
-			}
-			return output.iterator();
-		}
-
-		/**
 		 * Gets a list of all orders.
 		 * 
 		 * @return an iterator to the list of orders
@@ -295,7 +279,7 @@ public class GroceryStore implements Serializable {
 			// next if clause is carried out if there is a running checkout AND the product
 			// ID is valid AND there is enough quantity of the product on hand
 			if (checkOutOpen && product != null && product.getStockOnHand() >= request.getOrderQuantity()) {
-				// item is added to checkout
+				// item is added to checkout, invoking Transaction's addItem method
 				checkOut.addItem(new Item(product.getName(), product.getId(), request.getOrderQuantity(),
 						product.getCurrentPrice()));
 				// result fields are filled with relevant information (checked out product's
