@@ -855,6 +855,9 @@ public class UserInterface implements Serializable {
 		if (wantsToLoad) {
 			loaded = load();
 		}
+		if (loaded) {
+			System.out.println("Grocery Store updated.");
+		}
 		if (!loaded || !wantsToLoad) {
 			instance();
 			System.out.println();

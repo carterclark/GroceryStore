@@ -15,7 +15,7 @@ public class AutomatedTester {
 	private int memberCount = 7;
 	private int removeMemberCount = 2;
 
-	private String[] names = { "Paul", "George", "John", "Ringo", "Elton", "Madonna", "Pink" };
+	private String[] names = { "Paul", "George", "John", "Ringo", "Elton", "Elvis", "Pink" };
 	private String[] addresses = { "123 Fair Ave.", "555 Ocean Front Pkwy.", "147 W 5th St.", "10 Downing St.",
 			"1600 Pennsylvania Ave. NW", "25410 Sunset Blvd.", "211 Sandy Ridge Rd." };
 	private String[] phones = { "3125559876", "3105551245", "6515552045", "02055590000", "2025551000", "2135558548",
