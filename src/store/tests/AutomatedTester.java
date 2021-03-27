@@ -73,7 +73,7 @@ public class AutomatedTester {
 
 	public void testRemoveMember() {
 
-		for (int index = 0; index <= removeMemberCount; index++) {
+		for (int index = 0; index < removeMemberCount; index++) {
 
 			Request.instance().setMemberId("M-" + (index + 1));
 
