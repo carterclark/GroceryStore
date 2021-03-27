@@ -33,9 +33,8 @@ public class DataTransfer {
 	private int productReorderLevel;
 	private int orderQuantity;
 	private String orderId;
-	private String list;
-	boolean orderIsOutstanding;
-	Calendar dateOfOrder;
+	private boolean orderIsOutstanding;
+	private Calendar dateOfOrder;
 	private Iterator<Item> itemsList;
 	private double totalPrice;
 	private Calendar transactionDate;
@@ -64,7 +63,14 @@ public class DataTransfer {
 		productReorderLevel = 0;
 		orderQuantity = 0;
 		orderId = "";
-		list = "";
+		orderIsOutstanding = false;
+		dateOfOrder = null;
+		itemsList = null;
+		totalPrice = 0.0;
+		transactionDate = null;
+		itemQuantity = 0;
+		unitPrice = 0.0;
+		itemPrice = 0.0;
 	}
 
 	public Calendar getTransactionDate() {
@@ -217,14 +223,6 @@ public class DataTransfer {
 
 	public void setOrderId(String orderId) {
 		this.orderId = orderId;
-	}
-
-	public String getList() {
-		return list;
-	}
-
-	public void setList(String list) {
-		this.list = list;
 	}
 
 	public boolean getIsOutstanding() {
