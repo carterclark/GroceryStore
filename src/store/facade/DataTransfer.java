@@ -14,7 +14,8 @@ import store.entities.Transaction;
  * front and back end of the business, created to suit the exact needs of this
  * grocery store.
  * 
- * @author
+ * @author Ben Hines, Carter Clark, Chris Lara-Batencourt, Pavel Danek, Ricky
+ *         Nguyen
  *
  */
 public class DataTransfer {

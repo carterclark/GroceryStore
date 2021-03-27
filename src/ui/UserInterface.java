@@ -20,7 +20,8 @@ import store.tests.AutomatedTester;
  * which is free of any business logic itself, to keep the safety at maximum.
  * This class is a singleton.
  * 
- * @author
+ * @author Ben Hines, Carter Clark, Chris Lara-Batencourt, Pavel Danek, Ricky
+ *         Nguyen
  *
  */
 public class UserInterface implements Serializable {

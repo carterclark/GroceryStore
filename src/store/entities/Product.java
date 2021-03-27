@@ -6,7 +6,8 @@ import java.io.Serializable;
  * Class Product represents a single product from the catalog of products
  * carried by a grocery store.
  * 
- * @author
+ * @author Ben Hines, Carter Clark, Chris Lara-Batencourt, Pavel Danek, Ricky
+ *         Nguyen
  *
  */
 public class Product implements Serializable {

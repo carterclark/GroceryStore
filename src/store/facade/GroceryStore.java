@@ -20,7 +20,8 @@ import store.entities.Transaction;
  * middle-man between the user interface and the business logic of the grocery
  * store.
  * 
- * @author
+ * @author Ben Hines, Carter Clark, Chris Lara-Batencourt, Pavel Danek, Ricky
+ *         Nguyen
  */
 public class GroceryStore implements Serializable {
 

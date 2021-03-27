@@ -8,7 +8,8 @@ import java.util.Iterator;
 /**
  * Class Member represents a single member of a small co-op grocery store.
  * 
- * @author
+ * @author Ben Hines, Carter Clark, Chris Lara-Batencourt, Pavel Danek, Ricky
+ *         Nguyen
  *
  */
 public class Member implements Serializable {

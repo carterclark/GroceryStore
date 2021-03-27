@@ -8,7 +8,8 @@ import java.util.GregorianCalendar;
  * Class Order represents a grocery store's order (to a vendor) of a product,
  * that the store is either adding or running low on.
  * 
- * @author
+ * @author Ben Hines, Carter Clark, Chris Lara-Batencourt, Pavel Danek, Ricky
+ *         Nguyen
  *
  */
 public class Order implements Serializable {
