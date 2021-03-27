@@ -7,7 +7,8 @@ import java.util.Calendar;
  * transfer from the front end to the back. Adds fields necessary only for
  * unidirectional transfer.
  * 
- * @author
+ * @author Ben Hines, Carter Clark, Chris Lara-Batencourt, Pavel Danek, Ricky
+ *         Nguyen
  *
  */
 public class Request extends DataTransfer {

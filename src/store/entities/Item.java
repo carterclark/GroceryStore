@@ -7,7 +7,8 @@ import java.io.Serializable;
  * Class Item represents a single item of a Transaction. In a grocery store
  * environment, it can be understood as a single line on a check out receipt.
  * 
- * @author
+ * @author Ben Hines, Carter Clark, Chris Lara-Batencourt, Pavel Danek, Ricky
+ *         Nguyen
  *
  */
 public class Item implements Serializable {

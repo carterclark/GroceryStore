@@ -12,7 +12,8 @@ import java.util.Iterator;
  * receipt in a grocery store with a list of items on it. It is used to keep
  * track of member's transactions and as an entity for a checkout.
  * 
- * @author
+ * @author Ben Hines, Carter Clark, Chris Lara-Batencourt, Pavel Danek, Ricky
+ *         Nguyen
  *
  */
 public class Transaction implements Serializable {
@@ -52,11 +53,11 @@ public class Transaction implements Serializable {
 	public double getTotalPrice() {
 		return totalPrice;
 	}
-	
+
 	public void setMemberId(String memberId) {
 		this.memberId = memberId;
 	}
-	
+
 	public String getMemberId() {
 		return memberId;
 	}
@@ -80,15 +81,16 @@ public class Transaction implements Serializable {
 	 *         FALSE if otherwise
 	 */
 	public boolean isBetweenDates(Calendar firstDate, Calendar secondDate) {
-        //Set maximum and minimum possible values in the dates to allow inclusion of all times within those days
+		// Set maximum and minimum possible values in the dates to allow inclusion of
+		// all times within those days
 		firstDate.set(Calendar.MILLISECOND, 0);
-        firstDate.set(Calendar.SECOND, 0);
-        firstDate.set(Calendar.MINUTE, 0);
-        firstDate.set(Calendar.HOUR, 0);
-        secondDate.set(Calendar.MILLISECOND, 99);
-        secondDate.set(Calendar.SECOND, 59);
-        secondDate.set(Calendar.MINUTE, 59);
-        secondDate.set(Calendar.HOUR, 23);
+		firstDate.set(Calendar.SECOND, 0);
+		firstDate.set(Calendar.MINUTE, 0);
+		firstDate.set(Calendar.HOUR, 0);
+		secondDate.set(Calendar.MILLISECOND, 99);
+		secondDate.set(Calendar.SECOND, 59);
+		secondDate.set(Calendar.MINUTE, 59);
+		secondDate.set(Calendar.HOUR, 23);
 		return (!date.before(firstDate) && !date.after(secondDate));
 	}
 

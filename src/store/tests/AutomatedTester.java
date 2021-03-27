@@ -8,6 +8,13 @@ import store.facade.GroceryStore.CheckOut;
 import store.facade.Request;
 import store.facade.Result;
 
+/**
+ * Automated unit testing for grocery store program
+ * 
+ * @author Ben Hines, Carter Clark, Chris Lara-Batencourt, Pavel Danek, Ricky
+ *         Nguyen
+ *
+ */
 public class AutomatedTester {
 
 	private static GroceryStore groceryStore = GroceryStore.instance();

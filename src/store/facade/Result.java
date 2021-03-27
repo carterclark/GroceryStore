@@ -5,7 +5,8 @@ package store.facade;
  * the back end to the front. Adds result codes for deciphering the outcome of
  * the action taken.
  * 
- * @author
+ * @author Ben Hines, Carter Clark, Chris Lara-Batencourt, Pavel Danek, Ricky
+ *         Nguyen
  *
  */
 

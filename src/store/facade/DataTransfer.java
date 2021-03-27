@@ -14,7 +14,8 @@ import store.entities.Transaction;
  * front and back end of the business, created to suit the exact needs of this
  * grocery store.
  * 
- * @author
+ * @author Ben Hines, Carter Clark, Chris Lara-Batencourt, Pavel Danek, Ricky
+ *         Nguyen
  *
  */
 public class DataTransfer {
@@ -66,8 +67,6 @@ public class DataTransfer {
 		list = "";
 	}
 
-	
-	
 	public Calendar getTransactionDate() {
 		return transactionDate;
 	}
@@ -227,16 +226,16 @@ public class DataTransfer {
 	public void setList(String list) {
 		this.list = list;
 	}
-	
+
 	public boolean getIsOutstanding() {
 		return orderIsOutstanding;
 	}
-	
+
 	public Calendar getDateOfOrder() {
 		return dateOfOrder;
 	}
-	
-	public Iterator<Item> getTransactionsItemsList(){
+
+	public Iterator<Item> getTransactionsItemsList() {
 		return itemsList;
 	}
 
@@ -270,7 +269,7 @@ public class DataTransfer {
 		productCurrentPrice = product.getCurrentPrice();
 		productReorderLevel = product.getReorderLevel();
 	}
-	
+
 	/**
 	 * Sets all order fields with data from given Order object
 	 * 
@@ -284,7 +283,7 @@ public class DataTransfer {
 		orderQuantity = order.getQuantity();
 		orderIsOutstanding = order.isOutstanding();
 	}
-	
+
 	/**
 	 * Sets all transaction fields with data from given Transaction object
 	 * 
@@ -296,11 +295,12 @@ public class DataTransfer {
 		this.totalPrice = transaction.getTotalPrice();
 		this.transactionDate = transaction.getDate();
 	}
-	
+
 	/**
-	*Sets all item fields with data from given item object
-	*@param item - the Item which to fill the data with
-	*/
+	 * Sets all item fields with data from given item object
+	 * 
+	 * @param item - the Item which to fill the data with
+	 */
 	public void setItemFields(Item item) {
 		this.productName = item.getName();
 		this.productId = item.getProductId();
@@ -308,5 +308,5 @@ public class DataTransfer {
 		this.unitPrice = item.getUnitPrice();
 		this.itemPrice = item.getItemPrice();
 	}
-	
+
 }
